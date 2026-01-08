@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanning Workflow - Qualys Container Security Integration</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="nav-header">
+            <h1>Qualys Container Security Integration</h1>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-section">
+                <a href="../get_started/get_started.htm">Get Started</a>
+            </li>
+            <li class="nav-section">
+                <a href="concepts.htm">Concepts</a>
+                <ul>
+                    <li><a href="concepts.htm">How It Works</a></li>
+                    <li><a href="scanning_workflow.htm">Scanning Workflow</a></li>
+                    <li><a href="authentication.htm">Authentication</a></li>
+                </ul>
+            </li>
+            <li class="nav-section">
+                <a href="../github/github_integration.htm">GitHub Integration</a>
+            </li>
+            <li class="nav-section">
+                <a href="../azure/azure_integration.htm">Azure Integration</a>
+            </li>
+            <li class="nav-section">
+                <a href="../aws/aws_integration.htm">AWS Integration</a>
+            </li>
+            <li class="nav-section">
+                <a href="../kubernetes/kubernetes_integration.htm">Kubernetes Integration</a>
+            </li>
+        </ul>
+    </nav>
+    <main class="content">
+        <div class="breadcrumb">
+            <a href="../index.htm">Home</a> &gt; <a href="concepts.htm">Concepts</a> &gt; Scanning Workflow
+        </div>
+
+        <h1>Scanning Workflow</h1>
+
+        <p>This section describes the detailed scanning workflow from image detection through result delivery.</p>
+
+        <h2>CI/CD Scanning Workflow</h2>
+
+        <pre><code>┌─────────────────────────────────────────────────────────────────────┐
+│                          CI/CD Pipeline                              │
+│                                                                      │
+│  1. Checkout   2. Build     3. Scan       4. Evaluate   5. Deploy   │
+│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐   │
+│  │  Code   │→ │  Image  │→ │QScanner │→ │ Policy  │→ │  Push   │   │
+│  │         │  │         │  │         │  │  Check  │  │         │   │
+│  └─────────┘  └─────────┘  └────┬────┘  └────┬────┘  └─────────┘   │
+│                                 │            │                       │
+│                                 ▼            ▼                       │
+│                            ┌─────────┐  ┌─────────┐                 │
+│                            │ Reports │  │Pass/Fail│                 │
+│                            │(SARIF,  │  │         │                 │
+│                            │ JSON)   │  │         │                 │
+│                            └─────────┘  └─────────┘                 │
+└─────────────────────────────────────────────────────────────────────┘</code></pre>
+
+        <h3>Step-by-Step Process</h3>
+
+        <ol>
+            <li><strong>Image Reference</strong> - The scanner receives the container image reference (name:tag or digest)</li>
+            <li><strong>Image Pull</strong> - The image is pulled from the registry (using provided credentials if private)</li>
+            <li><strong>Layer Extraction</strong> - Container layers are extracted and analyzed</li>
+            <li><strong>Package Detection</strong> - OS and application packages are identified</li>
+            <li><strong>Vulnerability Matching</strong> - Packages are matched against the Qualys vulnerability database</li>
+            <li><strong>Secrets Scanning</strong> - Image layers are scanned for embedded secrets (if enabled)</li>
+            <li><strong>Report Generation</strong> - SARIF and JSON reports are generated</li>
+            <li><strong>Policy Evaluation</strong> - Results are evaluated against thresholds or cloud policies</li>
+            <li><strong>Result Output</strong> - Vulnerability counts and policy result are output for pipeline decisions</li>
+        </ol>
+
+        <h2>Event-Driven Scanning Workflow</h2>
+
+        <p>For cloud-native workloads (AWS, Azure), the workflow is event-driven:</p>
+
+        <pre><code>┌─────────────────────────────────────────────────────────────────────┐
+│                          Event-Driven Flow                           │
+│                                                                      │
+│  1. Deploy     2. Audit     3. Event      4. Process    5. Scan     │
+│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐   │
+│  │Container│→ │CloudTrail│→ │EventBridge│→ │Function │→ │ Qualys  │   │
+│  │   or    │  │Activity │  │Event Hub│  │Step Func│  │  API    │   │
+│  │ Lambda  │  │  Log    │  │         │  │         │  │         │   │
+│  └─────────┘  └─────────┘  └─────────┘  └────┬────┘  └────┬────┘   │
+│                                              │            │          │
+│                                              ▼            ▼          │
+│                                         ┌─────────┐  ┌─────────┐    │
+│                                         │ Cache   │  │ Notify  │    │
+│                                         │(DynamoDB│  │  (SNS)  │    │
+│                                         │ Storage)│  │         │    │
+│                                         └─────────┘  └─────────┘    │
+└─────────────────────────────────────────────────────────────────────┘</code></pre>
+
+        <h3>Event Processing Steps</h3>
+
+        <ol>
+            <li><strong>Event Capture</strong> - Cloud audit log captures the deployment API call</li>
+            <li><strong>Event Filtering</strong> - EventBridge/Event Hub filters for relevant events</li>
+            <li><strong>Event Parsing</strong> - Lambda/Function extracts container image details</li>
+            <li><strong>Cache Check</strong> - DynamoDB/Storage lookup prevents duplicate scans</li>
+            <li><strong>Registry Registration</strong> - Image registry is registered with Qualys (if new)</li>
+            <li><strong>Scan Submission</strong> - On-demand scan request submitted to Qualys API</li>
+            <li><strong>Polling</strong> - Step Functions/Durable Functions poll for scan completion</li>
+            <li><strong>Result Retrieval</strong> - Vulnerability findings retrieved from Qualys</li>
+            <li><strong>Notification</strong> - Results sent to SNS/Service Bus for downstream processing</li>
+        </ol>
+
+        <h2>Kubernetes Continuous Scanning</h2>
+
+        <pre><code>┌─────────────────────────────────────────────────────────────────────┐
+│                       Kubernetes Cluster                             │
+│                                                                      │
+│  ┌─────────────────────────────────────────────────────────────┐    │
+│  │                     DaemonSet (per node)                     │    │
+│  │  ┌─────────────────────────────────────────────────────┐    │    │
+│  │  │                  Qualys Sensor                       │    │    │
+│  │  │                                                      │    │    │
+│  │  │  1. Watch container runtime for new containers       │    │    │
+│  │  │  2. Pull image layers from local cache/registry      │    │    │
+│  │  │  3. Scan for vulnerabilities and malware             │    │    │
+│  │  │  4. Report findings to Qualys platform               │    │    │
+│  │  │  5. Monitor running containers                       │    │    │
+│  │  │                                                      │    │    │
+│  │  └─────────────────────────────────────────────────────┘    │    │
+│  └─────────────────────────────────────────────────────────────┘    │
+│                                  │                                   │
+│                                  ▼                                   │
+│                       Qualys Cloud Platform                          │
+│                       (Centralized Results)                          │
+└─────────────────────────────────────────────────────────────────────┘</code></pre>
+
+        <h2>Scan Caching</h2>
+
+        <p>To optimize performance and reduce duplicate scans, all integrations implement caching:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Integration</th>
+                    <th>Cache Store</th>
+                    <th>Default TTL</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>AWS Fargate/Lambda</td>
+                    <td>DynamoDB</td>
+                    <td>24 hours</td>
+                </tr>
+                <tr>
+                    <td>Azure ACI/ACA</td>
+                    <td>Azure Storage Tables</td>
+                    <td>24 hours</td>
+                </tr>
+                <tr>
+                    <td>Kubernetes Sensor</td>
+                    <td>Local cache + Qualys platform</td>
+                    <td>Configurable</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Cache Key Generation</h3>
+
+        <p>Cache keys are generated from image identifiers:</p>
+        <pre><code>cache_key = hash(registry + "/" + repository + "@" + digest)</code></pre>
+
+        <p>Using the image digest ensures that even if a tag is reused, a new scan is triggered for different image content.</p>
+
+        <h2>Result Delivery</h2>
+
+        <h3>Synchronous (CI/CD)</h3>
+        <p>Results are returned immediately to the pipeline:</p>
+        <ul>
+            <li>Vulnerability counts available as action outputs</li>
+            <li>Policy result (ALLOW/DENY/AUDIT) determines workflow outcome</li>
+            <li>Reports saved as artifacts for later review</li>
+        </ul>
+
+        <h3>Asynchronous (Cloud)</h3>
+        <p>Results are delivered via notifications:</p>
+        <ul>
+            <li>SNS topics for AWS integrations</li>
+            <li>Service Bus for Azure integrations</li>
+            <li>Webhook callbacks for custom integrations</li>
+        </ul>
+
+        <h3>Dashboard (Qualys Platform)</h3>
+        <p>All scan results are available in the Qualys Container Security console:</p>
+        <ul>
+            <li>Centralized vulnerability visibility</li>
+            <li>Historical trending and reporting</li>
+            <li>Policy management and compliance tracking</li>
+        </ul>
+
+        <div class="next-steps">
+            <h3>Next Steps</h3>
+            <p><a href="authentication.htm">Authentication &rarr;</a></p>
+        </div>
+    </main>
+</body>
+</html>

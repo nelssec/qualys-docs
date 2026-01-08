@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configure Environment Variables - Qualys Container Security Integration</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="nav-header">
+            <h1>Qualys Container Security Integration</h1>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-section">
+                <a href="../get_started/get_started.htm">Get Started</a>
+            </li>
+            <li class="nav-section">
+                <a href="../concepts/concepts.htm">Concepts</a>
+            </li>
+            <li class="nav-section">
+                <a href="github_integration.htm">GitHub Integration</a>
+                <ul>
+                    <li><a href="github_integration.htm">Overview</a></li>
+                    <li><a href="configure_github_actions.htm">Configure GitHub Actions</a></li>
+                    <li><a href="configure_environment_variables.htm">Configure Environment Variables</a></li>
+                    <li><a href="trigger_scan.htm">Trigger Scan</a></li>
+                    <li><a href="upload_sarif_file.htm">Upload SARIF File</a></li>
+                    <li><a href="create_issues.htm">Create GitHub Issues</a></li>
+                </ul>
+            </li>
+            <li class="nav-section">
+                <a href="../azure/azure_integration.htm">Azure Integration</a>
+            </li>
+            <li class="nav-section">
+                <a href="../aws/aws_integration.htm">AWS Integration</a>
+            </li>
+            <li class="nav-section">
+                <a href="../kubernetes/kubernetes_integration.htm">Kubernetes Integration</a>
+            </li>
+        </ul>
+    </nav>
+    <main class="content">
+        <div class="breadcrumb">
+            <a href="../index.htm">Home</a> &gt; <a href="github_integration.htm">GitHub Integration</a> &gt; Configure Environment Variables
+        </div>
+
+        <h1>Configure Environment Variables</h1>
+
+        <p>Before triggering container scans in GitHub Actions, you must configure the required secrets and environment variables. These credentials are used to authenticate with the Qualys platform and control scan behavior.</p>
+
+        <h2>Required Secrets</h2>
+
+        <p>Configure the following secrets in your GitHub repository or organization:</p>
+
+        <ol>
+            <li>Navigate to your repository or organization <strong>Settings</strong></li>
+            <li>Click <strong>Secrets and variables</strong> &gt; <strong>Actions</strong></li>
+            <li>Click <strong>New repository secret</strong> (or <strong>New organization secret</strong>)</li>
+            <li>Add the required secrets listed below</li>
+        </ol>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Secret Name</th>
+                    <th>Required</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>QUALYS_ACCESS_TOKEN</code></td>
+                    <td>Yes</td>
+                    <td>Your Qualys API access token with Container Security permissions</td>
+                </tr>
+                <tr>
+                    <td><code>GITHUB_TOKEN</code></td>
+                    <td>Auto</td>
+                    <td>Automatically provided by GitHub Actions for SARIF upload and issue creation</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Generate Qualys Access Token</h2>
+
+        <p>To generate an access token with Container Security permissions:</p>
+
+        <ol>
+            <li>Log in to the Qualys platform</li>
+            <li>Navigate to <strong>Administration</strong> &gt; <strong>User Management</strong></li>
+            <li>Select your user account or create a service account</li>
+            <li>Generate an API token with <strong>Container Security</strong> scope enabled</li>
+            <li>Copy the token value securely</li>
+        </ol>
+
+        <div class="important">
+            <div class="note-title">Important</div>
+            <p>Store your access token securely. Never commit tokens directly in your workflow files or repository code.</p>
+        </div>
+
+        <h2>Action Inputs</h2>
+
+        <p>The following inputs are available for the GitHub Action:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Input</th>
+                    <th>Required</th>
+                    <th>Default</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>qualys_access_token</code></td>
+                    <td>Yes</td>
+                    <td>-</td>
+                    <td>Qualys API access token</td>
+                </tr>
+                <tr>
+                    <td><code>qualys_pod</code></td>
+                    <td>Yes</td>
+                    <td>-</td>
+                    <td>Qualys platform region (US1, US2, US3, US4, EU1, EU2, CA1, IN1, AU1, UK1, AE1, KSA1)</td>
+                </tr>
+                <tr>
+                    <td><code>image_id</code></td>
+                    <td>Yes</td>
+                    <td>-</td>
+                    <td>Container image to scan (e.g., nginx:latest, myregistry.azurecr.io/app:v1.0)</td>
+                </tr>
+                <tr>
+                    <td><code>platform</code></td>
+                    <td>No</td>
+                    <td>linux/amd64</td>
+                    <td>Target platform for multi-arch images (linux/amd64, linux/arm64)</td>
+                </tr>
+                <tr>
+                    <td><code>scan_secrets</code></td>
+                    <td>No</td>
+                    <td>true</td>
+                    <td>Enable secrets detection scanning</td>
+                </tr>
+                <tr>
+                    <td><code>use_policy_evaluation</code></td>
+                    <td>No</td>
+                    <td>false</td>
+                    <td>Use Qualys cloud policies instead of local thresholds</td>
+                </tr>
+                <tr>
+                    <td><code>max_critical</code></td>
+                    <td>No</td>
+                    <td>0</td>
+                    <td>Maximum allowed critical vulnerabilities (0 = fail on any)</td>
+                </tr>
+                <tr>
+                    <td><code>max_high</code></td>
+                    <td>No</td>
+                    <td>0</td>
+                    <td>Maximum allowed high vulnerabilities</td>
+                </tr>
+                <tr>
+                    <td><code>max_medium</code></td>
+                    <td>No</td>
+                    <td>-1</td>
+                    <td>Maximum allowed medium vulnerabilities (-1 = unlimited)</td>
+                </tr>
+                <tr>
+                    <td><code>max_low</code></td>
+                    <td>No</td>
+                    <td>-1</td>
+                    <td>Maximum allowed low vulnerabilities (-1 = unlimited)</td>
+                </tr>
+                <tr>
+                    <td><code>create_issues</code></td>
+                    <td>No</td>
+                    <td>false</td>
+                    <td>Create GitHub Issues for discovered vulnerabilities</td>
+                </tr>
+                <tr>
+                    <td><code>issue_labels</code></td>
+                    <td>No</td>
+                    <td>security,vulnerability</td>
+                    <td>Labels to apply to created issues</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Action Outputs</h2>
+
+        <p>The action provides the following outputs for use in subsequent workflow steps:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Output</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>critical_count</code></td>
+                    <td>Number of critical vulnerabilities found</td>
+                </tr>
+                <tr>
+                    <td><code>high_count</code></td>
+                    <td>Number of high vulnerabilities found</td>
+                </tr>
+                <tr>
+                    <td><code>medium_count</code></td>
+                    <td>Number of medium vulnerabilities found</td>
+                </tr>
+                <tr>
+                    <td><code>low_count</code></td>
+                    <td>Number of low vulnerabilities found</td>
+                </tr>
+                <tr>
+                    <td><code>policy_result</code></td>
+                    <td>Policy evaluation result (ALLOW, DENY, AUDIT)</td>
+                </tr>
+                <tr>
+                    <td><code>sarif_path</code></td>
+                    <td>Path to generated SARIF report file</td>
+                </tr>
+                <tr>
+                    <td><code>json_path</code></td>
+                    <td>Path to generated JSON report file</td>
+                </tr>
+                <tr>
+                    <td><code>issues_created</code></td>
+                    <td>Number of GitHub Issues created</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="next-steps">
+            <h3>Next Steps</h3>
+            <p><a href="configure_github_actions.htm">Configure GitHub Actions &rarr;</a></p>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Actions - Qualys CI/CD Security Integration</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="nav-header">
+            <h1>Qualys CI/CD Security Integration</h1>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-section">
+                <a href="../get_started/get_started.htm">Get Started</a>
+            </li>
+            <li class="nav-section">
+                <a href="../concepts/concepts.htm">Concepts</a>
+            </li>
+            <li class="nav-section">
+                <a href="github_integration.htm">GitHub Actions</a>
+                <ul>
+                    <li><a href="github_integration.htm">Overview</a></li>
+                    <li><a href="container_scan.htm">Container Scan</a></li>
+                    <li><a href="code_scan.htm">Code Scan</a></li>
+                    <li><a href="configuration.htm">Configuration</a></li>
+                </ul>
+            </li>
+            <li class="nav-section">
+                <a href="../gitlab/gitlab_integration.htm">GitLab CI</a>
+            </li>
+            <li class="nav-section">
+                <a href="../jenkins/jenkins_integration.htm">Jenkins</a>
+            </li>
+            <li class="nav-section">
+                <a href="../azure-devops/ado_integration.htm">Azure DevOps</a>
+            </li>
+        </ul>
+    </nav>
+    <main class="content">
+        <div class="breadcrumb">
+            <a href="../index.htm">Home</a> &gt; GitHub Actions
+        </div>
+
+        <h1>GitHub Actions Integration</h1>
+
+        <p>The Qualys GitHub integration provides two reusable GitHub Actions for security scanning: one for container images and one for source code (SCA). Both actions support SARIF upload to the GitHub Security tab and automatic issue creation.</p>
+
+        <h2>Available Actions</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Purpose</th>
+                    <th>Path</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Container Scan</td>
+                    <td>Scan Docker/OCI container images for vulnerabilities</td>
+                    <td><code>qualys/qualys-github/container-scan@v1</code></td>
+                </tr>
+                <tr>
+                    <td>Code Scan</td>
+                    <td>Scan source code for vulnerable dependencies (SCA)</td>
+                    <td><code>qualys/qualys-github/code-scan@v1</code></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Capabilities</h2>
+
+        <ul>
+            <li><strong>Container Vulnerability Scanning</strong> - Scan images for OS and application package vulnerabilities</li>
+            <li><strong>Software Composition Analysis</strong> - Scan repositories for vulnerable dependencies</li>
+            <li><strong>Secrets Detection</strong> - Identify hardcoded secrets in container layers and source code</li>
+            <li><strong>SBOM Generation</strong> - Generate SPDX or CycloneDX SBOM (code scan only)</li>
+            <li><strong>Policy Evaluation</strong> - Use Qualys cloud policies or local thresholds</li>
+            <li><strong>SARIF Upload</strong> - Publish results to GitHub Security tab</li>
+            <li><strong>Issue Creation</strong> - Automatically create GitHub Issues for vulnerabilities</li>
+            <li><strong>Multi-Architecture</strong> - Scan linux/amd64 and linux/arm64 images</li>
+        </ul>
+
+        <h2>Prerequisites</h2>
+
+        <ul>
+            <li>A Qualys subscription with Container Security permissions</li>
+            <li>A Qualys API access token stored as a GitHub secret</li>
+            <li>GitHub Actions enabled on your repository</li>
+        </ul>
+
+        <h2>Quick Start</h2>
+
+        <h3>Container Scan</h3>
+
+        <pre><code>name: Container Security Scan
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build -t myapp:${{ github.sha }} .
+
+      - name: Scan container
+        uses: qualys/qualys-github/container-scan@v1
+        with:
+          qualys_access_token: ${{ secrets.QUALYS_ACCESS_TOKEN }}
+          qualys_pod: US3
+          image_id: myapp:${{ github.sha }}
+          max_critical: 0
+          max_high: 5
+          upload_sarif: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}</code></pre>
+
+        <h3>Code Scan</h3>
+
+        <pre><code>name: Code Security Scan
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Scan code
+        uses: qualys/qualys-github/code-scan@v1
+        with:
+          qualys_access_token: ${{ secrets.QUALYS_ACCESS_TOKEN }}
+          qualys_pod: US3
+          generate_sbom: true
+          sbom_format: spdx
+          scan_secrets: true
+          upload_sarif: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}</code></pre>
+
+        <h2>Workflow Outputs</h2>
+
+        <p>Both actions provide outputs for use in subsequent steps:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Output</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>vulnerability_count</code></td>
+                    <td>Total vulnerabilities found</td>
+                </tr>
+                <tr>
+                    <td><code>critical_count</code></td>
+                    <td>Critical severity count</td>
+                </tr>
+                <tr>
+                    <td><code>high_count</code></td>
+                    <td>High severity count</td>
+                </tr>
+                <tr>
+                    <td><code>medium_count</code></td>
+                    <td>Medium severity count</td>
+                </tr>
+                <tr>
+                    <td><code>low_count</code></td>
+                    <td>Low severity count</td>
+                </tr>
+                <tr>
+                    <td><code>policy_result</code></td>
+                    <td>ALLOW, DENY, AUDIT, or NONE</td>
+                </tr>
+                <tr>
+                    <td><code>scan_passed</code></td>
+                    <td>true/false based on thresholds or policy</td>
+                </tr>
+                <tr>
+                    <td><code>sarif_path</code></td>
+                    <td>Path to SARIF report file</td>
+                </tr>
+                <tr>
+                    <td><code>json_path</code></td>
+                    <td>Path to JSON report file</td>
+                </tr>
+                <tr>
+                    <td><code>sbom_path</code></td>
+                    <td>Path to SBOM file (code scan only)</td>
+                </tr>
+                <tr>
+                    <td><code>issues_created</code></td>
+                    <td>Number of GitHub Issues created</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="next-steps">
+            <h3>Next Steps</h3>
+            <ul>
+                <li><a href="container_scan.htm">Container Scan</a> - Detailed container scanning options</li>
+                <li><a href="code_scan.htm">Code Scan</a> - Detailed code scanning options</li>
+                <li><a href="configuration.htm">Configuration</a> - All configuration options</li>
+            </ul>
+        </div>
+    </main>
+</body>
+</html>

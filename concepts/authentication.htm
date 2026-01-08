@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication - Qualys Container Security Integration</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="nav-header">
+            <h1>Qualys Container Security Integration</h1>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-section">
+                <a href="../get_started/get_started.htm">Get Started</a>
+            </li>
+            <li class="nav-section">
+                <a href="concepts.htm">Concepts</a>
+                <ul>
+                    <li><a href="concepts.htm">How It Works</a></li>
+                    <li><a href="scanning_workflow.htm">Scanning Workflow</a></li>
+                    <li><a href="authentication.htm">Authentication</a></li>
+                </ul>
+            </li>
+            <li class="nav-section">
+                <a href="../github/github_integration.htm">GitHub Integration</a>
+            </li>
+            <li class="nav-section">
+                <a href="../azure/azure_integration.htm">Azure Integration</a>
+            </li>
+            <li class="nav-section">
+                <a href="../aws/aws_integration.htm">AWS Integration</a>
+            </li>
+            <li class="nav-section">
+                <a href="../kubernetes/kubernetes_integration.htm">Kubernetes Integration</a>
+            </li>
+        </ul>
+    </nav>
+    <main class="content">
+        <div class="breadcrumb">
+            <a href="../index.htm">Home</a> &gt; <a href="concepts.htm">Concepts</a> &gt; Authentication
+        </div>
+
+        <h1>Authentication</h1>
+
+        <p>This section covers authentication methods for the Qualys platform and container registries.</p>
+
+        <h2>Qualys Platform Authentication</h2>
+
+        <h3>API Access Token</h3>
+
+        <p>All integrations authenticate with the Qualys platform using bearer tokens:</p>
+
+        <pre><code>Authorization: Bearer &lt;access_token&gt;</code></pre>
+
+        <h4>Generating an Access Token</h4>
+
+        <ol>
+            <li>Log in to the Qualys platform</li>
+            <li>Navigate to <strong>Administration</strong> &gt; <strong>User Management</strong></li>
+            <li>Select your user or create a service account</li>
+            <li>Under <strong>API</strong>, generate a new token</li>
+            <li>Ensure <strong>Container Security</strong> scope is enabled</li>
+        </ol>
+
+        <div class="important">
+            <div class="note-title">Important</div>
+            <p>Store tokens securely using secrets management. Never commit tokens to version control.</p>
+        </div>
+
+        <h3>Agent Authentication</h3>
+
+        <p>Kubernetes sensors and agents use activation credentials:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Credential</th>
+                    <th>Description</th>
+                    <th>Use</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Activation ID</td>
+                    <td>Unique identifier for agent activation</td>
+                    <td>Cloud Agent, Container Sensor</td>
+                </tr>
+                <tr>
+                    <td>Customer ID</td>
+                    <td>Your Qualys customer identifier</td>
+                    <td>Cloud Agent, Container Sensor</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Platform Endpoints</h2>
+
+        <p>Use the correct gateway URL for your Qualys platform region:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>POD</th>
+                    <th>API Gateway</th>
+                    <th>Agent Gateway</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>US1</td>
+                    <td>https://qg1.apps.qualys.com</td>
+                    <td>https://qagpublic.qg1.apps.qualys.com</td>
+                </tr>
+                <tr>
+                    <td>US2</td>
+                    <td>https://qg2.apps.qualys.com</td>
+                    <td>https://qagpublic.qg2.apps.qualys.com</td>
+                </tr>
+                <tr>
+                    <td>US3</td>
+                    <td>https://qg3.apps.qualys.com</td>
+                    <td>https://qagpublic.qg3.apps.qualys.com</td>
+                </tr>
+                <tr>
+                    <td>US4</td>
+                    <td>https://qg4.apps.qualys.com</td>
+                    <td>https://qagpublic.qg4.apps.qualys.com</td>
+                </tr>
+                <tr>
+                    <td>EU1</td>
+                    <td>https://qg1.apps.qualys.eu</td>
+                    <td>https://qagpublic.qg1.apps.qualys.eu</td>
+                </tr>
+                <tr>
+                    <td>EU2</td>
+                    <td>https://qg2.apps.qualys.eu</td>
+                    <td>https://qagpublic.qg2.apps.qualys.eu</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Container Registry Authentication</h2>
+
+        <h3>Public Registries</h3>
+
+        <p>Public images from Docker Hub and other public registries require no authentication.</p>
+
+        <h3>Amazon ECR</h3>
+
+        <p>Use IAM role-based authentication:</p>
+
+        <pre><code># IAM Policy for ECR access
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ecr:GetAuthorizationToken",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage"
+            ],
+            "Resource": "*"
+        }
+    ]
+}</code></pre>
+
+        <h3>Azure Container Registry</h3>
+
+        <p>Use Service Principal authentication:</p>
+
+        <pre><code># Create Service Principal
+az ad sp create-for-rbac --name "qualys-scanner" --skip-assignment
+
+# Assign AcrPull role
+az role assignment create \
+  --assignee &lt;sp-app-id&gt; \
+  --role AcrPull \
+  --scope /subscriptions/&lt;sub&gt;/resourceGroups/&lt;rg&gt;/providers/Microsoft.ContainerRegistry/registries/&lt;acr&gt;</code></pre>
+
+        <p>Store credentials:</p>
+        <ul>
+            <li><code>ACR_APPLICATION_ID</code> - Service Principal application ID</li>
+            <li><code>ACR_CLIENT_SECRET</code> - Service Principal client secret</li>
+        </ul>
+
+        <h3>Google Container Registry / Artifact Registry</h3>
+
+        <p>Use service account key authentication:</p>
+
+        <pre><code># Create service account
+gcloud iam service-accounts create qualys-scanner
+
+# Grant access
+gcloud artifacts repositories add-iam-policy-binding REPO \
+  --location=LOCATION \
+  --member="serviceAccount:qualys-scanner@PROJECT.iam.gserviceaccount.com" \
+  --role="roles/artifactregistry.reader"
+
+# Create key
+gcloud iam service-accounts keys create key.json \
+  --iam-account=qualys-scanner@PROJECT.iam.gserviceaccount.com</code></pre>
+
+        <h3>Private Docker Registry</h3>
+
+        <p>Use username/password or token authentication:</p>
+
+        <pre><code># Docker login
+docker login registry.example.com -u username -p password
+
+# Or use environment variables
+DOCKER_USERNAME=username
+DOCKER_PASSWORD=password
+DOCKER_REGISTRY=registry.example.com</code></pre>
+
+        <h2>Secrets Management</h2>
+
+        <h3>GitHub Actions</h3>
+
+        <p>Store secrets in repository or organization settings:</p>
+        <pre><code>Settings → Secrets and variables → Actions → New repository secret</code></pre>
+
+        <h3>AWS Secrets Manager</h3>
+
+        <pre><code>aws secretsmanager create-secret \
+  --name qualys-api-token \
+  --secret-string "your-token-here"</code></pre>
+
+        <h3>Azure Key Vault</h3>
+
+        <pre><code>az keyvault secret set \
+  --vault-name my-vault \
+  --name qualys-api-token \
+  --value "your-token-here"</code></pre>
+
+        <h3>Kubernetes Secrets</h3>
+
+        <pre><code>kubectl create secret generic qualys-credentials \
+  --from-literal=activation-id=YOUR_ID \
+  --from-literal=customer-id=YOUR_CUSTOMER_ID \
+  -n qualys-system</code></pre>
+
+        <h3>External Secrets Operator</h3>
+
+        <pre><code>apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: qualys-credentials
+  namespace: qualys-system
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: vault-backend
+    kind: ClusterSecretStore
+  target:
+    name: qualys-credentials
+  data:
+    - secretKey: activation-id
+      remoteRef:
+        key: secret/qualys
+        property: activation_id
+    - secretKey: customer-id
+      remoteRef:
+        key: secret/qualys
+        property: customer_id</code></pre>
+
+        <h2>Token Rotation</h2>
+
+        <p>Best practices for token management:</p>
+
+        <ul>
+            <li><strong>Regular Rotation</strong> - Rotate API tokens every 90 days</li>
+            <li><strong>Least Privilege</strong> - Use tokens with minimal required scopes</li>
+            <li><strong>Audit Logging</strong> - Monitor token usage through Qualys audit logs</li>
+            <li><strong>Revocation</strong> - Immediately revoke compromised tokens</li>
+        </ul>
+
+        <div class="next-steps">
+            <h3>Next Steps</h3>
+            <ul>
+                <li><a href="../get_started/get_started.htm">Get Started</a> - Begin integration setup</li>
+                <li><a href="../github/github_integration.htm">GitHub Integration</a> - Configure CI/CD scanning</li>
+            </ul>
+        </div>
+    </main>
+</body>
+</html>

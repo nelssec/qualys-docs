@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trigger Scan - Qualys Container Security Integration</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="nav-header">
+            <h1>Qualys Container Security Integration</h1>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-section">
+                <a href="../get_started/get_started.htm">Get Started</a>
+            </li>
+            <li class="nav-section">
+                <a href="../concepts/concepts.htm">Concepts</a>
+            </li>
+            <li class="nav-section">
+                <a href="github_integration.htm">GitHub Integration</a>
+                <ul>
+                    <li><a href="github_integration.htm">Overview</a></li>
+                    <li><a href="configure_github_actions.htm">Configure GitHub Actions</a></li>
+                    <li><a href="configure_environment_variables.htm">Configure Environment Variables</a></li>
+                    <li><a href="trigger_scan.htm">Trigger Scan</a></li>
+                    <li><a href="upload_sarif_file.htm">Upload SARIF File</a></li>
+                    <li><a href="create_issues.htm">Create GitHub Issues</a></li>
+                </ul>
+            </li>
+            <li class="nav-section">
+                <a href="../azure/azure_integration.htm">Azure Integration</a>
+            </li>
+            <li class="nav-section">
+                <a href="../aws/aws_integration.htm">AWS Integration</a>
+            </li>
+            <li class="nav-section">
+                <a href="../kubernetes/kubernetes_integration.htm">Kubernetes Integration</a>
+            </li>
+        </ul>
+    </nav>
+    <main class="content">
+        <div class="breadcrumb">
+            <a href="../index.htm">Home</a> &gt; <a href="github_integration.htm">GitHub Integration</a> &gt; Trigger Scan
+        </div>
+
+        <h1>Trigger Scan</h1>
+
+        <p>Container security scans can be triggered automatically through various GitHub Actions events. This section explains the different trigger options and how to configure them.</p>
+
+        <h2>Push and Pull Request Triggers</h2>
+
+        <p>The most common triggers scan containers on code changes:</p>
+
+        <pre><code>on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]</code></pre>
+
+        <p>With this configuration:</p>
+        <ul>
+            <li>Scans run on every push to <code>main</code> or <code>develop</code> branches</li>
+            <li>Scans run on pull requests targeting the <code>main</code> branch</li>
+            <li>Pull request scans help identify vulnerabilities before merging</li>
+        </ul>
+
+        <h2>Scheduled Scans</h2>
+
+        <p>Use cron notation to schedule scans at regular intervals:</p>
+
+        <pre><code>on:
+  schedule:
+    # Run daily at 2:00 AM UTC
+    - cron: '0 2 * * *'
+
+    # Run weekly on Monday at 9:00 AM UTC
+    - cron: '0 9 * * 1'</code></pre>
+
+        <p>Scheduled scans are useful for:</p>
+        <ul>
+            <li>Detecting newly disclosed vulnerabilities in existing images</li>
+            <li>Regular security compliance checks</li>
+            <li>Monitoring production container images</li>
+        </ul>
+
+        <h2>Manual Triggers</h2>
+
+        <p>Enable manual workflow execution with input parameters:</p>
+
+        <pre><code>on:
+  workflow_dispatch:
+    inputs:
+      image:
+        description: 'Container image to scan'
+        required: true
+        default: 'nginx:latest'
+      pod:
+        description: 'Qualys POD region'
+        required: true
+        default: 'US1'
+        type: choice
+        options:
+          - US1
+          - US2
+          - EU1
+          - CA1
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Scan container image
+        uses: qualys/container-scan-action@v1
+        with:
+          qualys_access_token: ${{ secrets.QUALYS_ACCESS_TOKEN }}
+          qualys_pod: ${{ inputs.pod }}
+          image_id: ${{ inputs.image }}</code></pre>
+
+        <h2>Path-Based Triggers</h2>
+
+        <p>Only trigger scans when Dockerfile or container-related files change:</p>
+
+        <pre><code>on:
+  push:
+    branches: [main]
+    paths:
+      - 'Dockerfile'
+      - 'docker-compose.yml'
+      - '.dockerignore'
+      - 'src/**'</code></pre>
+
+        <h2>Tag-Based Triggers</h2>
+
+        <p>Scan container images when release tags are created:</p>
+
+        <pre><code>on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract tag name
+        id: tag
+        run: echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Build and scan release image
+        uses: qualys/container-scan-action@v1
+        with:
+          qualys_access_token: ${{ secrets.QUALYS_ACCESS_TOKEN }}
+          qualys_pod: US1
+          image_id: my-app:${{ steps.tag.outputs.version }}</code></pre>
+
+        <h2>Conditional Scanning</h2>
+
+        <p>Use conditional logic to control when scans run:</p>
+
+        <pre><code>jobs:
+  scan:
+    runs-on: ubuntu-latest
+    # Only scan on main branch or when PR is labeled 'security'
+    if: github.ref == 'refs/heads/main' || contains(github.event.pull_request.labels.*.name, 'security')
+    steps:
+      - name: Scan container image
+        uses: qualys/container-scan-action@v1
+        with:
+          qualys_access_token: ${{ secrets.QUALYS_ACCESS_TOKEN }}
+          qualys_pod: US1
+          image_id: my-app:latest</code></pre>
+
+        <h2>Matrix Scanning</h2>
+
+        <p>Scan multiple images in parallel using a matrix strategy:</p>
+
+        <pre><code>jobs:
+  scan:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image:
+          - nginx:latest
+          - redis:7
+          - postgres:15
+    steps:
+      - name: Scan ${{ matrix.image }}
+        uses: qualys/container-scan-action@v1
+        with:
+          qualys_access_token: ${{ secrets.QUALYS_ACCESS_TOKEN }}
+          qualys_pod: US1
+          image_id: ${{ matrix.image }}</code></pre>
+
+        <div class="next-steps">
+            <h3>Next Steps</h3>
+            <p><a href="upload_sarif_file.htm">Upload SARIF File &rarr;</a></p>
+        </div>
+    </main>
+</body>
+</html>

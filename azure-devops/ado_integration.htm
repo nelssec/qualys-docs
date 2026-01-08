@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure DevOps - Qualys CI/CD Security Integration</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="nav-header">
+            <h1>Qualys CI/CD Security Integration</h1>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-section">
+                <a href="../get_started/get_started.htm">Get Started</a>
+            </li>
+            <li class="nav-section">
+                <a href="../concepts/concepts.htm">Concepts</a>
+            </li>
+            <li class="nav-section">
+                <a href="../github/github_integration.htm">GitHub Actions</a>
+            </li>
+            <li class="nav-section">
+                <a href="../gitlab/gitlab_integration.htm">GitLab CI</a>
+            </li>
+            <li class="nav-section">
+                <a href="../jenkins/jenkins_integration.htm">Jenkins</a>
+            </li>
+            <li class="nav-section">
+                <a href="ado_integration.htm">Azure DevOps</a>
+                <ul>
+                    <li><a href="ado_integration.htm">Overview</a></li>
+                    <li><a href="container_scan.htm">Container Scan</a></li>
+                    <li><a href="code_scan.htm">Code Scan</a></li>
+                    <li><a href="configuration.htm">Configuration</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <main class="content">
+        <div class="breadcrumb">
+            <a href="../index.htm">Home</a> &gt; Azure DevOps
+        </div>
+
+        <h1>Azure DevOps Integration</h1>
+
+        <p>The Qualys Azure DevOps extension provides pipeline tasks for container and code scanning. Scan results can be published as SARIF reports and automatically create Azure Boards work items for vulnerability tracking.</p>
+
+        <h2>Available Tasks</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Task</th>
+                    <th>Purpose</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>QualysContainerScan@1</code></td>
+                    <td>Scan Docker/OCI container images</td>
+                </tr>
+                <tr>
+                    <td><code>QualysCodeScan@1</code></td>
+                    <td>Scan source code for vulnerable dependencies (SCA)</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Capabilities</h2>
+
+        <ul>
+            <li><strong>Container Scanning</strong> - Scan images for OS and package vulnerabilities</li>
+            <li><strong>Code Scanning (SCA)</strong> - Scan repositories for vulnerable dependencies</li>
+            <li><strong>Secrets Detection</strong> - Identify hardcoded secrets</li>
+            <li><strong>SBOM Generation</strong> - Generate SPDX or CycloneDX SBOM</li>
+            <li><strong>Policy Evaluation</strong> - Use Qualys cloud policies or thresholds</li>
+            <li><strong>SARIF Publishing</strong> - Publish results to Azure DevOps Advanced Security</li>
+            <li><strong>Work Item Creation</strong> - Create Azure Boards bugs for vulnerabilities</li>
+            <li><strong>Offline Scanning</strong> - Scan without uploading to Qualys platform</li>
+        </ul>
+
+        <h2>Prerequisites</h2>
+
+        <ul>
+            <li>Azure DevOps organization</li>
+            <li>Azure Pipelines (cloud or self-hosted)</li>
+            <li>A Qualys subscription with Container Security permissions</li>
+            <li>Docker (for container scanning)</li>
+        </ul>
+
+        <h2>Installation</h2>
+
+        <ol>
+            <li>Navigate to your Azure DevOps organization</li>
+            <li>Go to <strong>Organization Settings &gt; Extensions</strong></li>
+            <li>Click <strong>Browse Marketplace</strong></li>
+            <li>Search for "Qualys Security Scanner"</li>
+            <li>Click <strong>Get it free</strong> and install</li>
+        </ol>
+
+        <h2>Create Service Connection</h2>
+
+        <ol>
+            <li>Go to <strong>Project Settings &gt; Service connections</strong></li>
+            <li>Click <strong>New service connection</strong></li>
+            <li>Select <strong>Qualys API Connection</strong></li>
+            <li>Enter your Qualys POD and API access token</li>
+            <li>Save as "QualysConnection" (or custom name)</li>
+        </ol>
+
+        <h2>Quick Start</h2>
+
+        <h3>Container Scan</h3>
+
+        <pre><code>trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - task: Docker@2
+    displayName: 'Build Image'
+    inputs:
+      command: build
+      tags: $(Build.BuildId)
+
+  - task: QualysContainerScan@1
+    displayName: 'Qualys Container Scan'
+    inputs:
+      qualysConnection: 'QualysConnection'
+      imageId: 'myapp:$(Build.BuildId)'
+      usePolicyEvaluation: true
+      scanSecrets: true
+      publishResults: true</code></pre>
+
+        <h3>Code Scan</h3>
+
+        <pre><code>trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - task: QualysCodeScan@1
+    displayName: 'Qualys Code Scan'
+    inputs:
+      qualysConnection: 'QualysConnection'
+      scanPath: '$(Build.SourcesDirectory)'
+      usePolicyEvaluation: true
+      scanSecrets: true
+      generateSbom: true
+      sbomFormat: 'spdx'
+      publishResults: true</code></pre>
+
+        <h2>Output Variables</h2>
+
+        <p>Access scan results in subsequent tasks:</p>
+
+        <pre><code>- task: QualysContainerScan@1
+  name: qualysScan
+  inputs:
+    qualysConnection: 'QualysConnection'
+    imageId: 'myapp:latest'
+
+- script: |
+    echo "Vulnerabilities: $(qualysScan.vulnerabilityCount)"
+    echo "Critical: $(qualysScan.criticalCount)"
+    echo "Policy: $(qualysScan.policyResult)"
+  displayName: 'Show Results'</code></pre>
+
+        <h2>Work Item Creation</h2>
+
+        <p>Automatically create Azure Boards bugs for vulnerabilities:</p>
+
+        <pre><code>- task: QualysContainerScan@1
+  displayName: 'Scan and Create Work Items'
+  inputs:
+    qualysConnection: 'QualysConnection'
+    imageId: 'myapp:$(Build.BuildId)'
+    createWorkItems: true
+    workItemSeverities: '4'  # High and Critical
+    workItemAreaPath: 'MyProject\Security'
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)</code></pre>
+
+        <div class="important">
+            <div class="note-title">Important</div>
+            <p>To create work items, either enable "Allow scripts to access OAuth token" in pipeline settings, or pass the token via environment variable as shown above.</p>
+        </div>
+
+        <div class="next-steps">
+            <h3>Next Steps</h3>
+            <ul>
+                <li><a href="container_scan.htm">Container Scan</a> - Detailed container scan configuration</li>
+                <li><a href="code_scan.htm">Code Scan</a> - Detailed code scan configuration</li>
+                <li><a href="configuration.htm">Configuration</a> - All configuration options</li>
+            </ul>
+        </div>
+    </main>
+</body>
+</html>

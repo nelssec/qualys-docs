@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create GitHub Issues - Qualys Container Security Integration</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="nav-header">
+            <h1>Qualys Container Security Integration</h1>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-section">
+                <a href="../get_started/get_started.htm">Get Started</a>
+            </li>
+            <li class="nav-section">
+                <a href="../concepts/concepts.htm">Concepts</a>
+            </li>
+            <li class="nav-section">
+                <a href="github_integration.htm">GitHub Integration</a>
+                <ul>
+                    <li><a href="github_integration.htm">Overview</a></li>
+                    <li><a href="configure_github_actions.htm">Configure GitHub Actions</a></li>
+                    <li><a href="configure_environment_variables.htm">Configure Environment Variables</a></li>
+                    <li><a href="trigger_scan.htm">Trigger Scan</a></li>
+                    <li><a href="upload_sarif_file.htm">Upload SARIF File</a></li>
+                    <li><a href="create_issues.htm">Create GitHub Issues</a></li>
+                </ul>
+            </li>
+            <li class="nav-section">
+                <a href="../azure/azure_integration.htm">Azure Integration</a>
+            </li>
+            <li class="nav-section">
+                <a href="../aws/aws_integration.htm">AWS Integration</a>
+            </li>
+            <li class="nav-section">
+                <a href="../kubernetes/kubernetes_integration.htm">Kubernetes Integration</a>
+            </li>
+        </ul>
+    </nav>
+    <main class="content">
+        <div class="breadcrumb">
+            <a href="../index.htm">Home</a> &gt; <a href="github_integration.htm">GitHub Integration</a> &gt; Create GitHub Issues
+        </div>
+
+        <h1>Create GitHub Issues</h1>
+
+        <p>The Qualys Container Scan action can automatically create GitHub Issues for discovered vulnerabilities. This integrates security findings into your existing issue tracking workflow, making it easier to assign, track, and remediate vulnerabilities.</p>
+
+        <h2>Enable Issue Creation</h2>
+
+        <p>Set <code>create_issues: true</code> in your workflow configuration:</p>
+
+        <pre><code>name: Container Scan with Issue Creation
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      issues: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Scan container image
+        uses: qualys/container-scan-action@v1
+        with:
+          qualys_access_token: ${{ secrets.QUALYS_ACCESS_TOKEN }}
+          qualys_pod: US1
+          image_id: my-app:latest
+          create_issues: true
+          issue_labels: security,vulnerability,container</code></pre>
+
+        <div class="important">
+            <div class="note-title">Important</div>
+            <p>The workflow must have <code>issues: write</code> permission to create issues.</p>
+        </div>
+
+        <h2>Issue Configuration Options</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Input</th>
+                    <th>Default</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>create_issues</code></td>
+                    <td>false</td>
+                    <td>Enable automatic issue creation</td>
+                </tr>
+                <tr>
+                    <td><code>issue_labels</code></td>
+                    <td>security,vulnerability</td>
+                    <td>Comma-separated list of labels to apply</td>
+                </tr>
+                <tr>
+                    <td><code>issue_severity_threshold</code></td>
+                    <td>high</td>
+                    <td>Minimum severity to create issues (critical, high, medium, low)</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Issue Content</h2>
+
+        <p>Each created issue includes:</p>
+
+        <ul>
+            <li><strong>Title</strong> - CVE ID and affected package name</li>
+            <li><strong>Severity Label</strong> - Automatically applied based on CVSS score</li>
+            <li><strong>Description</strong> - Vulnerability details and impact</li>
+            <li><strong>Affected Package</strong> - Package name and vulnerable version</li>
+            <li><strong>Fixed Version</strong> - Recommended upgrade version (if available)</li>
+            <li><strong>Container Image</strong> - Image name and tag that was scanned</li>
+            <li><strong>References</strong> - Links to CVE databases and advisories</li>
+        </ul>
+
+        <h2>Example Issue</h2>
+
+        <p>A typical generated issue looks like:</p>
+
+        <pre><code>Title: [CRITICAL] CVE-2023-12345 in openssl 1.1.1k
+
+Labels: security, vulnerability, container, critical
+
+Body:
+## Vulnerability Details
+
+**CVE ID:** CVE-2023-12345
+**Severity:** Critical (CVSS 9.8)
+**Package:** openssl
+**Installed Version:** 1.1.1k
+**Fixed Version:** 1.1.1l
+
+## Description
+
+A buffer overflow vulnerability exists in OpenSSL that allows
+remote attackers to execute arbitrary code...
+
+## Affected Image
+
+- **Image:** my-app:latest
+- **Digest:** sha256:abc123...
+- **Scanned:** 2024-01-15T10:30:00Z
+
+## Remediation
+
+Update the openssl package to version 1.1.1l or later.
+
+## References
+
+- https://nvd.nist.gov/vuln/detail/CVE-2023-12345
+- https://www.openssl.org/news/secadv/...</code></pre>
+
+        <h2>Duplicate Prevention</h2>
+
+        <p>The action checks for existing open issues with the same CVE ID before creating new ones. This prevents duplicate issues when:</p>
+
+        <ul>
+            <li>The same vulnerability is detected in multiple scans</li>
+            <li>Multiple images share the same vulnerable package</li>
+            <li>Scheduled scans run repeatedly</li>
+        </ul>
+
+        <h2>Severity-Based Issue Creation</h2>
+
+        <p>Create issues only for high-severity vulnerabilities:</p>
+
+        <pre><code>- name: Scan container image
+  uses: qualys/container-scan-action@v1
+  with:
+    qualys_access_token: ${{ secrets.QUALYS_ACCESS_TOKEN }}
+    qualys_pod: US1
+    image_id: my-app:latest
+    create_issues: true
+    issue_severity_threshold: critical</code></pre>
+
+        <h2>Custom Labels</h2>
+
+        <p>Apply custom labels to organize issues:</p>
+
+        <pre><code>- name: Scan container image
+  uses: qualys/container-scan-action@v1
+  with:
+    qualys_access_token: ${{ secrets.QUALYS_ACCESS_TOKEN }}
+    qualys_pod: US1
+    image_id: my-app:latest
+    create_issues: true
+    issue_labels: security,container,team-platform,priority-high</code></pre>
+
+        <div class="tip">
+            <div class="note-title">Tip</div>
+            <p>Create labels in your repository before running the workflow. The action will use existing labels but cannot create new ones.</p>
+        </div>
+
+        <h2>Output: Issues Created Count</h2>
+
+        <p>Access the number of issues created in subsequent steps:</p>
+
+        <pre><code>- name: Scan container image
+  id: scan
+  uses: qualys/container-scan-action@v1
+  with:
+    qualys_access_token: ${{ secrets.QUALYS_ACCESS_TOKEN }}
+    qualys_pod: US1
+    image_id: my-app:latest
+    create_issues: true
+
+- name: Report issues created
+  run: echo "Created ${{ steps.scan.outputs.issues_created }} issues"</code></pre>
+
+        <div class="next-steps">
+            <h3>Next Steps</h3>
+            <ul>
+                <li><a href="../azure/azure_integration.htm">Azure Integration</a> - Scan Azure container workloads</li>
+                <li><a href="../aws/aws_integration.htm">AWS Integration</a> - Scan AWS container workloads</li>
+            </ul>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jenkins - Qualys CI/CD Security Integration</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="nav-header">
+            <h1>Qualys CI/CD Security Integration</h1>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-section">
+                <a href="../get_started/get_started.htm">Get Started</a>
+            </li>
+            <li class="nav-section">
+                <a href="../concepts/concepts.htm">Concepts</a>
+            </li>
+            <li class="nav-section">
+                <a href="../github/github_integration.htm">GitHub Actions</a>
+            </li>
+            <li class="nav-section">
+                <a href="../gitlab/gitlab_integration.htm">GitLab CI</a>
+            </li>
+            <li class="nav-section">
+                <a href="jenkins_integration.htm">Jenkins</a>
+                <ul>
+                    <li><a href="jenkins_integration.htm">Overview</a></li>
+                    <li><a href="qscanner_backend.htm">QScanner Backend</a></li>
+                    <li><a href="cicd_sensor.htm">CICD Sensor</a></li>
+                    <li><a href="configuration.htm">Configuration</a></li>
+                </ul>
+            </li>
+            <li class="nav-section">
+                <a href="../azure-devops/ado_integration.htm">Azure DevOps</a>
+            </li>
+        </ul>
+    </nav>
+    <main class="content">
+        <div class="breadcrumb">
+            <a href="../index.htm">Home</a> &gt; Jenkins
+        </div>
+
+        <h1>Jenkins Integration</h1>
+
+        <p>The Qualys Jenkins plugin provides comprehensive security scanning for your Jenkins pipelines. It supports two scanner backends: QScanner (on-demand) and CICD Sensor (pre-installed), with support for container, code, and rootfs scanning.</p>
+
+        <h2>Scanner Backends</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Backend</th>
+                    <th>Use Case</th>
+                    <th>Authentication</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>QScanner</strong></td>
+                    <td>Ephemeral agents, cloud builds, no pre-installation</td>
+                    <td>API Token</td>
+                </tr>
+                <tr>
+                    <td><strong>CICD Sensor</strong></td>
+                    <td>Dedicated build servers, faster scanning</td>
+                    <td>Username/Password</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Capabilities</h2>
+
+        <ul>
+            <li><strong>Container Scanning</strong> - Scan Docker/OCI images for vulnerabilities</li>
+            <li><strong>Code Scanning (SCA)</strong> - Scan source code for vulnerable dependencies</li>
+            <li><strong>Rootfs Scanning</strong> - Scan filesystem directories directly</li>
+            <li><strong>Secrets Detection</strong> - Identify hardcoded secrets</li>
+            <li><strong>Malware Detection</strong> - Scan for malware in containers</li>
+            <li><strong>SBOM Generation</strong> - Generate SPDX or CycloneDX SBOM</li>
+            <li><strong>Jira Integration</strong> - Create Jira issues for vulnerabilities</li>
+            <li><strong>Offline Scanning</strong> - Scan without uploading to Qualys platform</li>
+            <li><strong>CloudBees CI</strong> - Full compatibility with CloudBees CI</li>
+        </ul>
+
+        <h2>Prerequisites</h2>
+
+        <ul>
+            <li>Jenkins 2.426.3 or later</li>
+            <li>Java 11 or later</li>
+            <li>A Qualys subscription with Container Security permissions</li>
+            <li>Docker (for container scanning)</li>
+        </ul>
+
+        <h2>Installation</h2>
+
+        <h3>From Update Center</h3>
+        <ol>
+            <li>Navigate to <strong>Manage Jenkins &gt; Manage Plugins</strong></li>
+            <li>Select the <strong>Available</strong> tab</li>
+            <li>Search for "Qualys Scanner"</li>
+            <li>Install and restart Jenkins</li>
+        </ol>
+
+        <h3>Manual Installation</h3>
+        <ol>
+            <li>Download the <code>qualys-scanner.hpi</code> file</li>
+            <li>Navigate to <strong>Manage Jenkins &gt; Manage Plugins &gt; Advanced</strong></li>
+            <li>Upload the plugin file</li>
+            <li>Restart Jenkins</li>
+        </ol>
+
+        <h2>Quick Start - Pipeline</h2>
+
+        <h3>QScanner Backend</h3>
+
+        <pre><code>pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                sh 'docker build -t myapp:${BUILD_NUMBER} .'
+            }
+        }
+        stage('Security Scan') {
+            steps {
+                qualysScan(
+                    credentialsId: 'qualys-api-token',
+                    scannerBackend: 'qscanner',
+                    scanType: 'container',
+                    imageId: "myapp:${BUILD_NUMBER}",
+                    maxCritical: 0,
+                    maxHigh: 5,
+                    scanSecrets: true,
+                    publishSarif: true
+                )
+            }
+        }
+    }
+}</code></pre>
+
+        <h3>CICD Sensor Backend</h3>
+
+        <pre><code>pipeline {
+    agent { label 'qualys-sensor' }
+    stages {
+        stage('Security Scan') {
+            steps {
+                qualysScan(
+                    scannerBackend: 'cicd_sensor',
+                    cicdCredentialsId: 'qualys-username-password',
+                    scanType: 'container',
+                    imageId: "myapp:${BUILD_NUMBER}",
+                    pollingInterval: 10,
+                    vulnsTimeout: 600
+                )
+            }
+        }
+    }
+}</code></pre>
+
+        <h2>Scan Types</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>QScanner</th>
+                    <th>CICD Sensor</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>container</code></td>
+                    <td>Container image scanning</td>
+                    <td>Yes</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td><code>code</code></td>
+                    <td>Source code SCA scanning</td>
+                    <td>Yes</td>
+                    <td>No</td>
+                </tr>
+                <tr>
+                    <td><code>rootfs</code></td>
+                    <td>Filesystem directory scanning</td>
+                    <td>Yes</td>
+                    <td>No</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Pipeline Result Object</h2>
+
+        <p>Access scan results in pipeline scripts:</p>
+
+        <pre><code>def result = qualysScan(
+    credentialsId: 'qualys-api-token',
+    scanType: 'container',
+    imageId: 'myapp:latest'
+)
+
+echo "Total vulnerabilities: ${result.totalVulnerabilities}"
+echo "Critical: ${result.criticalCount}"
+echo "Policy result: ${result.policyResult}"
+echo "Scan passed: ${result.thresholdsPassed}"</code></pre>
+
+        <div class="next-steps">
+            <h3>Next Steps</h3>
+            <ul>
+                <li><a href="qscanner_backend.htm">QScanner Backend</a> - On-demand scanning configuration</li>
+                <li><a href="cicd_sensor.htm">CICD Sensor</a> - Pre-installed sensor configuration</li>
+                <li><a href="configuration.htm">Configuration</a> - All configuration options</li>
+            </ul>
+        </div>
+    </main>
+</body>
+</html>

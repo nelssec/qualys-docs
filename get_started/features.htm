@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Features - Qualys CI/CD Security Integration</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="nav-header">
+            <h1>Qualys CI/CD Security Integration</h1>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-section">
+                <a href="get_started.htm">Get Started</a>
+                <ul>
+                    <li><a href="get_started.htm">Overview</a></li>
+                    <li><a href="features.htm">Features</a></li>
+                    <li><a href="supported_platforms.htm">Supported Platforms</a></li>
+                </ul>
+            </li>
+            <li class="nav-section">
+                <a href="../concepts/concepts.htm">Concepts</a>
+            </li>
+            <li class="nav-section">
+                <a href="../github/github_integration.htm">GitHub Actions</a>
+            </li>
+            <li class="nav-section">
+                <a href="../gitlab/gitlab_integration.htm">GitLab CI</a>
+            </li>
+            <li class="nav-section">
+                <a href="../jenkins/jenkins_integration.htm">Jenkins</a>
+            </li>
+            <li class="nav-section">
+                <a href="../azure-devops/ado_integration.htm">Azure DevOps</a>
+            </li>
+        </ul>
+    </nav>
+    <main class="content">
+        <div class="breadcrumb">
+            <a href="../index.htm">Home</a> &gt; <a href="get_started.htm">Get Started</a> &gt; Features
+        </div>
+
+        <h1>Features</h1>
+
+        <p>Qualys CI/CD Security Integration provides comprehensive security scanning capabilities for your build pipelines.</p>
+
+        <h2>Container Vulnerability Scanning</h2>
+
+        <p>Scan Docker/OCI container images for known vulnerabilities:</p>
+
+        <ul>
+            <li><strong>OS Package Scanning</strong> - Detect vulnerabilities in base image OS packages (apt, yum, apk, etc.)</li>
+            <li><strong>Application Dependencies</strong> - Scan language-specific packages:
+                <ul>
+                    <li>Node.js (npm, yarn)</li>
+                    <li>Python (pip, pipenv, poetry)</li>
+                    <li>Java (Maven, Gradle)</li>
+                    <li>Ruby (gem, bundler)</li>
+                    <li>Go (modules)</li>
+                    <li>.NET (NuGet)</li>
+                    <li>Rust (cargo)</li>
+                </ul>
+            </li>
+            <li><strong>Multi-Architecture Support</strong> - Scan images for linux/amd64, linux/arm64 platforms</li>
+            <li><strong>Storage Driver Options</strong> - Optimize scanning with docker-overlay2, containerd-overlayfs, or podman-overlay</li>
+        </ul>
+
+        <h2>Software Composition Analysis (SCA)</h2>
+
+        <p>Scan source code repositories for vulnerable dependencies:</p>
+
+        <ul>
+            <li><strong>Dependency Detection</strong> - Automatically detect package manifests (package.json, requirements.txt, pom.xml, etc.)</li>
+            <li><strong>Transitive Dependencies</strong> - Identify vulnerabilities in nested dependencies</li>
+            <li><strong>Directory Exclusion</strong> - Exclude test directories, vendor folders, or specific paths</li>
+            <li><strong>Offline Scanning</strong> - Scan without uploading to Qualys platform (Jenkins, Azure DevOps)</li>
+        </ul>
+
+        <h2>Secrets Detection</h2>
+
+        <p>Identify hardcoded secrets before they reach production:</p>
+
+        <ul>
+            <li><strong>API Keys and Tokens</strong> - AWS, GCP, Azure, GitHub, Slack, and other service tokens</li>
+            <li><strong>Private Keys</strong> - SSH keys, TLS certificates, PGP keys</li>
+            <li><strong>Credentials</strong> - Database passwords, connection strings, authentication tokens</li>
+            <li><strong>Container Layers</strong> - Scan all image layers for embedded secrets</li>
+        </ul>
+
+        <h2>SBOM Generation</h2>
+
+        <p>Generate Software Bill of Materials for compliance and inventory:</p>
+
+        <ul>
+            <li><strong>SPDX Format</strong> - Industry-standard SPDX 2.3 JSON output</li>
+            <li><strong>CycloneDX Format</strong> - OWASP CycloneDX JSON output</li>
+            <li><strong>Both Formats</strong> - Generate both simultaneously for different tooling requirements</li>
+        </ul>
+
+        <h2>Policy Enforcement</h2>
+
+        <h3>Threshold-Based Gating</h3>
+        <p>Configure maximum allowed vulnerabilities per severity:</p>
+        <ul>
+            <li><code>max_critical: 0</code> - Fail on any critical vulnerability</li>
+            <li><code>max_high: 5</code> - Allow up to 5 high-severity findings</li>
+            <li><code>max_medium: -1</code> - No limit (unlimited)</li>
+            <li><code>max_low: -1</code> - No limit</li>
+        </ul>
+
+        <h3>Cloud Policy Evaluation</h3>
+        <p>Use centralized Qualys platform policies:</p>
+        <ul>
+            <li><strong>Policy Tags</strong> - Apply policies by tag (e.g., "production", "pci")</li>
+            <li><strong>Policy Actions</strong> - ALLOW, DENY, or AUDIT based on findings</li>
+            <li><strong>Centralized Management</strong> - Update policies without changing pipeline code</li>
+        </ul>
+
+        <h2>Reporting and Integration</h2>
+
+        <h3>SARIF Reports</h3>
+        <ul>
+            <li>GitHub Security tab integration</li>
+            <li>Azure DevOps Advanced Security</li>
+            <li>VS Code SARIF Viewer compatibility</li>
+        </ul>
+
+        <h3>Issue/Work Item Creation</h3>
+        <ul>
+            <li><strong>GitHub Issues</strong> - Automatic issue creation with CVE details</li>
+            <li><strong>Jira Integration</strong> - Create Jira tickets (Jenkins)</li>
+            <li><strong>Azure Work Items</strong> - Create bugs in Azure Boards</li>
+            <li><strong>Duplicate Prevention</strong> - Check for existing issues before creation</li>
+        </ul>
+
+        <h3>Native Security Dashboards</h3>
+        <ul>
+            <li>GitLab Security Dashboard (container scanning, secret detection reports)</li>
+            <li>GitHub Code Scanning alerts</li>
+        </ul>
+
+        <h2>Platform-Specific Features</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th>GitHub</th>
+                    <th>GitLab</th>
+                    <th>Jenkins</th>
+                    <th>Azure DevOps</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Container Scan</td>
+                    <td>Yes</td>
+                    <td>Yes</td>
+                    <td>Yes</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>Code Scan (SCA)</td>
+                    <td>Yes</td>
+                    <td>Yes</td>
+                    <td>Yes</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>Secrets Detection</td>
+                    <td>Yes</td>
+                    <td>Yes</td>
+                    <td>Yes</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>SBOM Generation</td>
+                    <td>Code only</td>
+                    <td>No</td>
+                    <td>Yes</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>Malware Detection</td>
+                    <td>No</td>
+                    <td>Yes</td>
+                    <td>Yes</td>
+                    <td>No</td>
+                </tr>
+                <tr>
+                    <td>Rootfs Scanning</td>
+                    <td>No</td>
+                    <td>No</td>
+                    <td>Yes</td>
+                    <td>No</td>
+                </tr>
+                <tr>
+                    <td>Offline Scanning</td>
+                    <td>No</td>
+                    <td>No</td>
+                    <td>Yes</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>Issue Creation</td>
+                    <td>GitHub</td>
+                    <td>-</td>
+                    <td>Jira</td>
+                    <td>Work Items</td>
+                </tr>
+                <tr>
+                    <td>Dual Backends</td>
+                    <td>No</td>
+                    <td>No</td>
+                    <td>Yes</td>
+                    <td>No</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="next-steps">
+            <h3>Next Steps</h3>
+            <ul>
+                <li><a href="supported_platforms.htm">View Supported Platforms</a> - See platform requirements</li>
+                <li><a href="../concepts/concepts.htm">Understand Concepts</a> - Learn how scanning works</li>
+            </ul>
+        </div>
+    </main>
+</body>
+</html>

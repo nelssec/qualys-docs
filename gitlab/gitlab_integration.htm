@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitLab CI - Qualys CI/CD Security Integration</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="nav-header">
+            <h1>Qualys CI/CD Security Integration</h1>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-section">
+                <a href="../get_started/get_started.htm">Get Started</a>
+            </li>
+            <li class="nav-section">
+                <a href="../concepts/concepts.htm">Concepts</a>
+            </li>
+            <li class="nav-section">
+                <a href="../github/github_integration.htm">GitHub Actions</a>
+            </li>
+            <li class="nav-section">
+                <a href="gitlab_integration.htm">GitLab CI</a>
+                <ul>
+                    <li><a href="gitlab_integration.htm">Overview</a></li>
+                    <li><a href="ci_component.htm">CI Component</a></li>
+                    <li><a href="configuration.htm">Configuration</a></li>
+                </ul>
+            </li>
+            <li class="nav-section">
+                <a href="../jenkins/jenkins_integration.htm">Jenkins</a>
+            </li>
+            <li class="nav-section">
+                <a href="../azure-devops/ado_integration.htm">Azure DevOps</a>
+            </li>
+        </ul>
+    </nav>
+    <main class="content">
+        <div class="breadcrumb">
+            <a href="../index.htm">Home</a> &gt; GitLab CI
+        </div>
+
+        <h1>GitLab CI Integration</h1>
+
+        <p>The Qualys GitLab integration provides a native CI component for container vulnerability scanning with direct integration into the GitLab Security Dashboard. Scan results appear in the Security tab alongside other GitLab security features.</p>
+
+        <h2>Capabilities</h2>
+
+        <ul>
+            <li><strong>Container Vulnerability Scanning</strong> - Scan container images for OS and package vulnerabilities</li>
+            <li><strong>Secrets Detection</strong> - Identify hardcoded secrets in container layers</li>
+            <li><strong>Malware Detection</strong> - Scan for malware in container images</li>
+            <li><strong>GitLab Security Dashboard</strong> - Native integration with container scanning and secret detection reports</li>
+            <li><strong>Policy Evaluation</strong> - Use Qualys cloud policies or severity thresholds</li>
+            <li><strong>Pipeline Gating</strong> - Fail pipelines based on scan results</li>
+        </ul>
+
+        <h2>Prerequisites</h2>
+
+        <ul>
+            <li>GitLab 16.0 or later</li>
+            <li>GitLab Runner with Docker executor</li>
+            <li>A Qualys subscription with Container Security permissions</li>
+            <li>A Qualys API access token stored as a CI/CD variable</li>
+        </ul>
+
+        <h2>Quick Start</h2>
+
+        <p>Include the Qualys CI component in your <code>.gitlab-ci.yml</code>:</p>
+
+        <pre><code>include:
+  - component: gitlab.com/qualys/qualys-container-scan@1.0.0
+    inputs:
+      pod: "US3"
+      image: "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
+      scan_types: "pkg,secret"
+      fail_on_severity: "4"</code></pre>
+
+        <h2>Scan Modes</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Mode</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>get-report</code></td>
+                    <td>Scan and generate vulnerability report (default)</td>
+                </tr>
+                <tr>
+                    <td><code>evaluate-policy</code></td>
+                    <td>Evaluate against Qualys cloud policies</td>
+                </tr>
+                <tr>
+                    <td><code>scan-only</code></td>
+                    <td>Scan without generating reports</td>
+                </tr>
+                <tr>
+                    <td><code>inventory-only</code></td>
+                    <td>Collect inventory without vulnerability matching</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Scan Types</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>pkg</code></td>
+                    <td>Package vulnerability scanning (default)</td>
+                </tr>
+                <tr>
+                    <td><code>secret</code></td>
+                    <td>Secrets detection</td>
+                </tr>
+                <tr>
+                    <td><code>malware</code></td>
+                    <td>Malware detection</td>
+                </tr>
+                <tr>
+                    <td><code>fileinsight</code></td>
+                    <td>File analysis and insight</td>
+                </tr>
+                <tr>
+                    <td><code>compliance</code></td>
+                    <td>Compliance checking</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Exit Codes</h2>
+
+        <p>The CI component uses exit codes to indicate scan results:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Meaning</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>0</td>
+                    <td>Success - scan passed thresholds/policy</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Error - scan failed to complete</td>
+                </tr>
+                <tr>
+                    <td>42</td>
+                    <td>Policy DENY - scan failed policy evaluation</td>
+                </tr>
+                <tr>
+                    <td>43</td>
+                    <td>Policy AUDIT - scan requires review</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Security Dashboard Integration</h2>
+
+        <p>Scan results are automatically published to the GitLab Security Dashboard:</p>
+
+        <ul>
+            <li><strong>Container Scanning</strong> - <code>gl-container-scanning-report.json</code></li>
+            <li><strong>Secret Detection</strong> - <code>gl-secret-detection-report.json</code></li>
+        </ul>
+
+        <p>View results in your project's <strong>Security &amp; Compliance &gt; Vulnerability Report</strong>.</p>
+
+        <div class="next-steps">
+            <h3>Next Steps</h3>
+            <ul>
+                <li><a href="ci_component.htm">CI Component</a> - Detailed component usage</li>
+                <li><a href="configuration.htm">Configuration</a> - All configuration options</li>
+            </ul>
+        </div>
+    </main>
+</body>
+</html>

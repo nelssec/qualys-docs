@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supported Platforms - Qualys CI/CD Security Integration</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="nav-header">
+            <h1>Qualys CI/CD Security Integration</h1>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-section">
+                <a href="get_started.htm">Get Started</a>
+                <ul>
+                    <li><a href="get_started.htm">Overview</a></li>
+                    <li><a href="features.htm">Features</a></li>
+                    <li><a href="supported_platforms.htm">Supported Platforms</a></li>
+                </ul>
+            </li>
+            <li class="nav-section">
+                <a href="../concepts/concepts.htm">Concepts</a>
+            </li>
+            <li class="nav-section">
+                <a href="../github/github_integration.htm">GitHub Actions</a>
+            </li>
+            <li class="nav-section">
+                <a href="../gitlab/gitlab_integration.htm">GitLab CI</a>
+            </li>
+            <li class="nav-section">
+                <a href="../jenkins/jenkins_integration.htm">Jenkins</a>
+            </li>
+            <li class="nav-section">
+                <a href="../azure-devops/ado_integration.htm">Azure DevOps</a>
+            </li>
+        </ul>
+    </nav>
+    <main class="content">
+        <div class="breadcrumb">
+            <a href="../index.htm">Home</a> &gt; <a href="get_started.htm">Get Started</a> &gt; Supported Platforms
+        </div>
+
+        <h1>Supported Platforms</h1>
+
+        <p>Qualys CI/CD Security Integration supports the following platforms and environments.</p>
+
+        <h2>CI/CD Platforms</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Platform</th>
+                    <th>Integration Type</th>
+                    <th>Requirements</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>GitHub Actions</td>
+                    <td>Reusable Actions</td>
+                    <td>GitHub-hosted or self-hosted runners with Docker</td>
+                </tr>
+                <tr>
+                    <td>GitLab CI</td>
+                    <td>CI Component</td>
+                    <td>GitLab 16.0+ with Docker executor</td>
+                </tr>
+                <tr>
+                    <td>Jenkins</td>
+                    <td>Jenkins Plugin</td>
+                    <td>Jenkins 2.426.3+, Java 11+</td>
+                </tr>
+                <tr>
+                    <td>Azure DevOps</td>
+                    <td>Pipeline Extension</td>
+                    <td>Azure Pipelines with Docker support</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Runner/Agent Requirements</h2>
+
+        <h3>GitHub Actions</h3>
+        <ul>
+            <li><strong>GitHub-hosted</strong>: ubuntu-latest, ubuntu-22.04, ubuntu-20.04 (Docker pre-installed)</li>
+            <li><strong>Self-hosted</strong>: Linux with Docker installed</li>
+            <li>Node.js 20+ (bundled with action)</li>
+        </ul>
+
+        <h3>GitLab CI</h3>
+        <ul>
+            <li>GitLab Runner with Docker executor</li>
+            <li>Docker 20.10+ or compatible container runtime</li>
+        </ul>
+
+        <h3>Jenkins</h3>
+        <ul>
+            <li>Jenkins 2.426.3 or later</li>
+            <li>Java 11 or later</li>
+            <li>Docker (for container scanning)</li>
+            <li>Optional: Pre-installed CICD Sensor for dedicated build servers</li>
+            <li>CloudBees CI compatible</li>
+        </ul>
+
+        <h3>Azure DevOps</h3>
+        <ul>
+            <li>Azure Pipelines (cloud or self-hosted)</li>
+            <li>Microsoft-hosted: ubuntu-latest, windows-latest</li>
+            <li>Self-hosted: Docker installed</li>
+            <li>Node.js 20+ (bundled with tasks)</li>
+        </ul>
+
+        <h2>Qualys Platform Regions (PODs)</h2>
+
+        <p>All integrations support the following Qualys platform regions:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>POD ID</th>
+                    <th>Region</th>
+                    <th>API Gateway</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>US1</td>
+                    <td>United States 1</td>
+                    <td>qg1.apps.qualys.com</td>
+                </tr>
+                <tr>
+                    <td>US2</td>
+                    <td>United States 2</td>
+                    <td>qg2.apps.qualys.com</td>
+                </tr>
+                <tr>
+                    <td>US3</td>
+                    <td>United States 3</td>
+                    <td>qg3.apps.qualys.com</td>
+                </tr>
+                <tr>
+                    <td>US4</td>
+                    <td>United States 4</td>
+                    <td>qg4.apps.qualys.com</td>
+                </tr>
+                <tr>
+                    <td>EU1</td>
+                    <td>Europe 1</td>
+                    <td>qg1.apps.qualys.eu</td>
+                </tr>
+                <tr>
+                    <td>EU2</td>
+                    <td>Europe 2</td>
+                    <td>qg2.apps.qualys.eu</td>
+                </tr>
+                <tr>
+                    <td>CA1</td>
+                    <td>Canada</td>
+                    <td>qg1.apps.qualys.ca</td>
+                </tr>
+                <tr>
+                    <td>IN1</td>
+                    <td>India</td>
+                    <td>qg1.apps.qualys.in</td>
+                </tr>
+                <tr>
+                    <td>AU1</td>
+                    <td>Australia</td>
+                    <td>qg1.apps.qualys.com.au</td>
+                </tr>
+                <tr>
+                    <td>UK1</td>
+                    <td>United Kingdom</td>
+                    <td>qg1.apps.qualys.co.uk</td>
+                </tr>
+                <tr>
+                    <td>AE1</td>
+                    <td>United Arab Emirates</td>
+                    <td>qg1.apps.qualys.ae</td>
+                </tr>
+                <tr>
+                    <td>KSA1</td>
+                    <td>Saudi Arabia</td>
+                    <td>qg1.apps.qualys.sa</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Container Registry Support</h2>
+
+        <p>The integrations can scan images from any OCI-compliant registry:</p>
+
+        <ul>
+            <li>Docker Hub</li>
+            <li>Amazon ECR</li>
+            <li>Azure Container Registry (ACR)</li>
+            <li>Google Container Registry (GCR) / Artifact Registry</li>
+            <li>GitHub Container Registry (GHCR)</li>
+            <li>GitLab Container Registry</li>
+            <li>JFrog Artifactory</li>
+            <li>Harbor</li>
+            <li>Quay.io</li>
+            <li>Private Docker registries</li>
+        </ul>
+
+        <h2>Container Image Platforms</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Platform</th>
+                    <th>Architecture</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>linux/amd64</td>
+                    <td>x86_64 (default)</td>
+                </tr>
+                <tr>
+                    <td>linux/arm64</td>
+                    <td>ARM 64-bit</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Storage Drivers</h2>
+
+        <p>For optimized container scanning, the following storage drivers are supported:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Driver</th>
+                    <th>Use Case</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>none</code></td>
+                    <td>Default - pull image from registry</td>
+                </tr>
+                <tr>
+                    <td><code>docker-overlay2</code></td>
+                    <td>Use local Docker daemon cache</td>
+                </tr>
+                <tr>
+                    <td><code>containerd-overlayfs</code></td>
+                    <td>Use local containerd cache</td>
+                </tr>
+                <tr>
+                    <td><code>podman-overlay</code></td>
+                    <td>Use local Podman cache</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="next-steps">
+            <h3>Next Steps</h3>
+            <ul>
+                <li><a href="../github/github_integration.htm">GitHub Actions Integration</a></li>
+                <li><a href="../gitlab/gitlab_integration.htm">GitLab CI Integration</a></li>
+                <li><a href="../jenkins/jenkins_integration.htm">Jenkins Integration</a></li>
+                <li><a href="../azure-devops/ado_integration.htm">Azure DevOps Integration</a></li>
+            </ul>
+        </div>
+    </main>
+</body>
+</html>
