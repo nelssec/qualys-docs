@@ -39,8 +39,14 @@ function setActivePage() {
     const currentPath = window.location.pathname;
     const currentPage = currentPath.split('/').pop() || 'index.html';
 
-    // Find and mark active link
+    // First, collapse all sections
+    document.querySelectorAll('.nav-section').forEach(section => {
+        section.classList.remove('expanded');
+    });
+
+    // Find and mark active link, expand only its parent section
     const allLinks = document.querySelectorAll('.nav-submenu a, .nav-section > .nav-link');
+    let activeSection = null;
 
     allLinks.forEach(link => {
         const href = link.getAttribute('href');
@@ -49,28 +55,35 @@ function setActivePage() {
             if (linkPage === currentPage || href.includes(currentPage)) {
                 link.classList.add('active');
 
-                // Expand parent section
+                // Mark parent section to expand
                 const parentSection = link.closest('.nav-section');
                 if (parentSection) {
-                    parentSection.classList.add('expanded');
+                    activeSection = parentSection;
                 }
             }
         }
     });
 
-    // Auto-expand section based on current directory
-    const pathParts = currentPath.split('/');
-    const currentDir = pathParts[pathParts.length - 2];
+    // If no active link found, try to match by directory
+    if (!activeSection) {
+        const pathParts = currentPath.split('/');
+        const currentDir = pathParts[pathParts.length - 2];
 
-    document.querySelectorAll('.nav-section').forEach(section => {
-        const sectionLink = section.querySelector('.nav-link');
-        if (sectionLink) {
-            const href = sectionLink.getAttribute('href') || '';
-            if (href.includes(currentDir + '/') || href.includes('../' + currentDir)) {
-                section.classList.add('expanded');
+        document.querySelectorAll('.nav-section').forEach(section => {
+            const sectionLink = section.querySelector('.nav-link');
+            if (sectionLink) {
+                const href = sectionLink.getAttribute('href') || '';
+                if (href.includes(currentDir + '/') || href.includes('../' + currentDir)) {
+                    activeSection = section;
+                }
             }
-        }
-    });
+        });
+    }
+
+    // Expand only the active section
+    if (activeSection) {
+        activeSection.classList.add('expanded');
+    }
 }
 
 // Mobile menu toggle

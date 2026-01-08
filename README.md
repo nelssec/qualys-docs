@@ -11,21 +11,27 @@ Documentation for integrating Qualys container and code security scanning into C
 
 ## View Documentation
 
-This documentation is published via GitHub Pages at:
+View the live documentation at: **https://nelssec.github.io/qualys-docs/**
 
-**https://YOUR_USERNAME.github.io/qualys-docs/**
+## Source Repositories
+
+- [qualys-github](https://github.com/nelssec/qualys-github) - GitHub Actions
+- [qualys-gitlab](https://github.com/nelssec/qualys-gitlab) - GitLab CI Component
+- [qualys-jenkins](https://github.com/nelssec/qualys-jenkins) - Jenkins Plugin
+- [qualys-ado](https://github.com/nelssec/qualys-ado) - Azure DevOps Extension
 
 ## Local Development
 
-Open `index.htm` in your browser to view locally.
+Open `index.html` in your browser to view locally.
 
 ## Structure
 
 ```
 qualys-docs/
-├── index.htm                 # Home page
+├── index.html               # Home page
 ├── assets/
-│   └── styles.css           # Documentation styles
+│   ├── styles.css           # Documentation styles
+│   └── script.js            # Navigation script
 ├── get_started/             # Getting started guides
 ├── concepts/                # Architecture and concepts
 ├── github/                  # GitHub Actions docs
