@@ -1,10 +1,5 @@
-// Qualys Documentation - Navigation Script
-
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize collapsible navigation
     initNavigation();
-
-    // Set active page
     setActivePage();
 });
 
@@ -17,19 +12,7 @@ function initNavigation() {
 
         if (link && submenu) {
             link.addEventListener('click', function(e) {
-                // If it's just a toggle (has submenu), prevent navigation
-                const href = this.getAttribute('href');
-
-                // Toggle expanded state
                 section.classList.toggle('expanded');
-
-                // Close other sections (accordion behavior)
-                navSections.forEach(otherSection => {
-                    if (otherSection !== section && otherSection.classList.contains('expanded')) {
-                        // Keep other sections open for now
-                        // otherSection.classList.remove('expanded');
-                    }
-                });
             });
         }
     });
@@ -37,56 +20,62 @@ function initNavigation() {
 
 function setActivePage() {
     const currentPath = window.location.pathname;
-    const currentPage = currentPath.split('/').pop() || 'index.html';
+    const pathParts = currentPath.split('/');
+    const currentPage = pathParts.pop() || 'index.html';
+    const currentDir = pathParts.pop() || '';
 
-    // First, collapse all sections
     document.querySelectorAll('.nav-section').forEach(section => {
         section.classList.remove('expanded');
     });
+    document.querySelectorAll('.nav-submenu a, .nav-section > .nav-link').forEach(link => {
+        link.classList.remove('active');
+    });
 
-    // Find and mark active link, expand only its parent section
-    const allLinks = document.querySelectorAll('.nav-submenu a, .nav-section > .nav-link');
+    const allLinks = document.querySelectorAll('.nav-submenu a');
     let activeSection = null;
+    let foundExactMatch = false;
 
     allLinks.forEach(link => {
+        if (foundExactMatch) return;
+
         const href = link.getAttribute('href');
         if (href) {
-            const linkPage = href.split('/').pop();
-            if (linkPage === currentPage || href.includes(currentPage)) {
-                link.classList.add('active');
+            const hrefParts = href.split('/');
+            const hrefPage = hrefParts.pop();
+            const hrefDir = hrefParts.pop() || '';
 
-                // Mark parent section to expand
+            const dirMatch = (hrefDir === currentDir) ||
+                             (hrefDir === '.' && currentDir === '') ||
+                             (currentDir === 'qualys-docs' && hrefDir === '');
+
+            if (hrefPage === currentPage && dirMatch) {
+                link.classList.add('active');
                 const parentSection = link.closest('.nav-section');
                 if (parentSection) {
                     activeSection = parentSection;
+                    foundExactMatch = true;
                 }
             }
         }
     });
 
-    // If no active link found, try to match by directory
-    if (!activeSection) {
-        const pathParts = currentPath.split('/');
-        const currentDir = pathParts[pathParts.length - 2];
-
+    if (!activeSection && currentDir) {
         document.querySelectorAll('.nav-section').forEach(section => {
             const sectionLink = section.querySelector('.nav-link');
             if (sectionLink) {
                 const href = sectionLink.getAttribute('href') || '';
-                if (href.includes(currentDir + '/') || href.includes('../' + currentDir)) {
+                if (href.includes(currentDir + '/') || href.includes('/' + currentDir + '/')) {
                     activeSection = section;
                 }
             }
         });
     }
 
-    // Expand only the active section
     if (activeSection) {
         activeSection.classList.add('expanded');
     }
 }
 
-// Mobile menu toggle
 function toggleMobileMenu() {
     const sidebar = document.querySelector('.sidebar');
     sidebar.classList.toggle('open');
