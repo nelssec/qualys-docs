@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qualys CI/CD Security Integration</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="nav-header">
+            <h1>Qualys CI/CD Security Integration</h1>
+            <div class="subtitle">Documentation</div>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-section expanded">
+                <a class="nav-link" href="get_started/get_started.htm">
+                    Get Started
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
+                    <li><a href="get_started/get_started.htm">Overview</a></li>
+                    <li><a href="get_started/features.htm">Features</a></li>
+                    <li><a href="get_started/supported_platforms.htm">Supported Platforms</a></li>
+                </ul>
+            </li>
+            <li class="nav-section">
+                <a class="nav-link" href="concepts/concepts.htm">
+                    Concepts
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
+                    <li><a href="concepts/concepts.htm">How It Works</a></li>
+                    <li><a href="concepts/scanning_workflow.htm">Scanning Workflow</a></li>
+                    <li><a href="concepts/authentication.htm">Authentication</a></li>
+                </ul>
+            </li>
+            <li class="nav-section">
+                <a class="nav-link" href="github/github_integration.htm">
+                    GitHub Actions
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
+                    <li><a href="github/github_integration.htm">Overview</a></li>
+                    <li><a href="github/container_scan.htm">Container Scan</a></li>
+                    <li><a href="github/code_scan.htm">Code Scan</a></li>
+                    <li><a href="github/configuration.htm">Configuration</a></li>
+                </ul>
+            </li>
+            <li class="nav-section">
+                <a class="nav-link" href="gitlab/gitlab_integration.htm">
+                    GitLab CI
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
+                    <li><a href="gitlab/gitlab_integration.htm">Overview</a></li>
+                    <li><a href="gitlab/ci_component.htm">CI Component</a></li>
+                    <li><a href="gitlab/configuration.htm">Configuration</a></li>
+                </ul>
+            </li>
+            <li class="nav-section">
+                <a class="nav-link" href="jenkins/jenkins_integration.htm">
+                    Jenkins
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
+                    <li><a href="jenkins/jenkins_integration.htm">Overview</a></li>
+                    <li><a href="jenkins/qscanner_backend.htm">QScanner Backend</a></li>
+                    <li><a href="jenkins/cicd_sensor.htm">CICD Sensor</a></li>
+                    <li><a href="jenkins/configuration.htm">Configuration</a></li>
+                </ul>
+            </li>
+            <li class="nav-section">
+                <a class="nav-link" href="azure-devops/ado_integration.htm">
+                    Azure DevOps
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
+                    <li><a href="azure-devops/ado_integration.htm">Overview</a></li>
+                    <li><a href="azure-devops/container_scan.htm">Container Scan</a></li>
+                    <li><a href="azure-devops/code_scan.htm">Code Scan</a></li>
+                    <li><a href="azure-devops/configuration.htm">Configuration</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <div class="content-header">
+            <div class="breadcrumb">
+                <a href="index.html">Home</a>
+            </div>
+        </div>
+        <div class="content-body">
+            <h1>Qualys CI/CD Security Integration</h1>
+
+            <p>Welcome to the Qualys CI/CD Security Integration documentation. This guide provides comprehensive information on integrating Qualys container and code security scanning into your CI/CD pipelines.</p>
+
+            <p>Shift security left by scanning container images and source code for vulnerabilities during your build process. Identify issues before they reach production with policy-based gating and automated issue tracking.</p>
+
+            <h2>Supported Platforms</h2>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>GitHub Actions</h4>
+                    <p>Two reusable actions for container and code scanning with SARIF upload and GitHub Issues integration.</p>
+                    <p><a href="github/github_integration.htm">View Documentation →</a></p>
+                </div>
+                <div class="feature-card">
+                    <h4>GitLab CI</h4>
+                    <p>Native CI component with GitLab Security Dashboard integration for container scanning.</p>
+                    <p><a href="gitlab/gitlab_integration.htm">View Documentation →</a></p>
+                </div>
+                <div class="feature-card">
+                    <h4>Jenkins</h4>
+                    <p>Full-featured plugin with dual scanner backends (QScanner and CICD Sensor) and Jira integration.</p>
+                    <p><a href="jenkins/jenkins_integration.htm">View Documentation →</a></p>
+                </div>
+                <div class="feature-card">
+                    <h4>Azure DevOps</h4>
+                    <p>Pipeline extension with container and code scanning tasks, SARIF publishing, and work item creation.</p>
+                    <p><a href="azure-devops/ado_integration.htm">View Documentation →</a></p>
+                </div>
+            </div>
+
+            <h2>Key Features</h2>
+
+            <ul>
+                <li><strong>Container Vulnerability Scanning</strong> – Scan Docker/OCI images for OS and application package vulnerabilities</li>
+                <li><strong>Software Composition Analysis (SCA)</strong> – Scan source code for vulnerable dependencies</li>
+                <li><strong>Secrets Detection</strong> – Identify hardcoded secrets, API keys, and credentials</li>
+                <li><strong>SBOM Generation</strong> – Generate Software Bill of Materials in SPDX or CycloneDX format</li>
+                <li><strong>Policy Evaluation</strong> – Use centralized Qualys cloud policies for consistent enforcement</li>
+                <li><strong>Threshold Gating</strong> – Configure maximum allowed vulnerabilities per severity level</li>
+                <li><strong>Issue Tracking</strong> – Automatically create GitHub Issues, Jira tickets, or Azure Work Items</li>
+            </ul>
+
+            <div class="next-steps">
+                <h3>Get Started</h3>
+                <ul>
+                    <li><a href="get_started/get_started.htm">Quick Start Guide</a> – Set up your first integration</li>
+                    <li><a href="get_started/features.htm">Features Overview</a> – Explore all capabilities</li>
+                    <li><a href="concepts/concepts.htm">How It Works</a> – Understand the scanning architecture</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content-footer">
+            © 2024 Qualys, Inc. All rights reserved.
+        </div>
+    </main>
+
+    <script src="assets/script.js"></script>
+</body>
+</html>
