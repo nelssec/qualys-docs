@@ -20,7 +20,7 @@ function initNavigation() {
 
 function setActivePage() {
     const currentPath = window.location.pathname;
-    const pathParts = currentPath.split('/');
+    const pathParts = currentPath.split('/').filter(p => p);
     const currentPage = pathParts.pop() || 'index.html';
     const currentDir = pathParts.pop() || '';
 
@@ -31,49 +31,52 @@ function setActivePage() {
         link.classList.remove('active');
     });
 
-    const allLinks = document.querySelectorAll('.nav-submenu a');
     let activeSection = null;
-    let foundExactMatch = false;
 
-    allLinks.forEach(link => {
-        if (foundExactMatch) return;
+    document.querySelectorAll('.nav-section').forEach(section => {
+        if (activeSection) return;
 
-        const href = link.getAttribute('href');
-        if (href) {
-            const hrefParts = href.split('/');
-            const hrefPage = hrefParts.pop();
-            const hrefDir = hrefParts.pop() || '';
+        const sectionLink = section.querySelector('.nav-link');
+        if (!sectionLink) return;
 
-            const dirMatch = (hrefDir === currentDir) ||
-                             (hrefDir === '.' && currentDir === '') ||
-                             (currentDir === 'qualys-docs' && hrefDir === '');
+        const sectionHref = sectionLink.getAttribute('href') || '';
+        const sectionDir = getSectionDir(sectionHref);
 
-            if (hrefPage === currentPage && dirMatch) {
+        if (sectionDir !== currentDir && currentDir !== '' && sectionDir !== '') return;
+
+        const submenuLinks = section.querySelectorAll('.nav-submenu a');
+        submenuLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            if (!href) return;
+
+            const linkPage = href.split('/').pop();
+            if (linkPage === currentPage) {
                 link.classList.add('active');
-                const parentSection = link.closest('.nav-section');
-                if (parentSection) {
-                    activeSection = parentSection;
-                    foundExactMatch = true;
-                }
-            }
-        }
-    });
-
-    if (!activeSection && currentDir) {
-        document.querySelectorAll('.nav-section').forEach(section => {
-            const sectionLink = section.querySelector('.nav-link');
-            if (sectionLink) {
-                const href = sectionLink.getAttribute('href') || '';
-                if (href.includes(currentDir + '/') || href.includes('/' + currentDir + '/')) {
-                    activeSection = section;
-                }
+                activeSection = section;
             }
         });
-    }
+    });
 
     if (activeSection) {
         activeSection.classList.add('expanded');
     }
+}
+
+function getSectionDir(href) {
+    if (!href) return '';
+    if (!href.includes('/')) {
+        const page = href.replace('.htm', '');
+        if (page.includes('get_started')) return 'get_started';
+        if (page.includes('concept')) return 'concepts';
+        if (page.includes('github')) return 'github';
+        if (page.includes('gitlab')) return 'gitlab';
+        if (page.includes('jenkins')) return 'jenkins';
+        if (page.includes('ado') || page.includes('azure')) return 'azure-devops';
+        return '';
+    }
+    const parts = href.split('/').filter(p => p && p !== '..');
+    if (parts.length >= 2) return parts[parts.length - 2];
+    return '';
 }
 
 function toggleMobileMenu() {
