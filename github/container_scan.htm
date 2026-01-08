@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Container Scan - GitHub Actions - Qualys CI/CD Security Integration</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="nav-header">
+            <h1>Qualys CI/CD Security Integration</h1>
+            <div class="subtitle">Documentation</div>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-section">
+                <a class="nav-link" href="../get_started/get_started.htm">
+                    Get Started
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
+                    <li><a href="../get_started/get_started.htm">Overview</a></li>
+                    <li><a href="../get_started/features.htm">Features</a></li>
+                    <li><a href="../get_started/supported_platforms.htm">Supported Platforms</a></li>
+                </ul>
+            </li>
+            <li class="nav-section">
+                <a class="nav-link" href="../concepts/concepts.htm">
+                    Concepts
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
+                    <li><a href="../concepts/concepts.htm">How It Works</a></li>
+                    <li><a href="../concepts/scanning_workflow.htm">Scanning Workflow</a></li>
+                    <li><a href="../concepts/authentication.htm">Authentication</a></li>
+                </ul>
+            </li>
+            <li class="nav-section">
+                <a class="nav-link" href="github_integration.htm">
+                    GitHub Actions
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
+                    <li><a href="github_integration.htm">Overview</a></li>
+                    <li><a href="container_scan.htm">Container Scan</a></li>
+                    <li><a href="code_scan.htm">Code Scan</a></li>
+                    <li><a href="configuration.htm">Configuration</a></li>
+                </ul>
+            </li>
+            <li class="nav-section">
+                <a class="nav-link" href="../gitlab/gitlab_integration.htm">
+                    GitLab CI
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
+                    <li><a href="../gitlab/gitlab_integration.htm">Overview</a></li>
+                    <li><a href="../gitlab/ci_component.htm">CI Component</a></li>
+                    <li><a href="../gitlab/configuration.htm">Configuration</a></li>
+                </ul>
+            </li>
+            <li class="nav-section">
+                <a class="nav-link" href="../jenkins/jenkins_integration.htm">
+                    Jenkins
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
+                    <li><a href="../jenkins/jenkins_integration.htm">Overview</a></li>
+                    <li><a href="../jenkins/qscanner_backend.htm">QScanner Backend</a></li>
+                    <li><a href="../jenkins/cicd_sensor.htm">CICD Sensor</a></li>
+                    <li><a href="../jenkins/configuration.htm">Configuration</a></li>
+                </ul>
+            </li>
+            <li class="nav-section">
+                <a class="nav-link" href="../azure-devops/ado_integration.htm">
+                    Azure DevOps
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
+                    <li><a href="../azure-devops/ado_integration.htm">Overview</a></li>
+                    <li><a href="../azure-devops/container_scan.htm">Container Scan</a></li>
+                    <li><a href="../azure-devops/code_scan.htm">Code Scan</a></li>
+                    <li><a href="../azure-devops/configuration.htm">Configuration</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <div class="content-header">
+            <div class="breadcrumb">
+                <a href="../index.html">Home</a>
+                <span>›</span>
+                <a href="github_integration.htm">GitHub Actions</a>
+                <span>›</span>
+                <a href="container_scan.htm">Container Scan</a>
+            </div>
+        </div>
+        <div class="content-body">
+            <h1>GitHub Actions Container Scan</h1>
+
+            <p>The Container Scan action scans Docker/OCI container images for vulnerabilities, secrets, and malware. It supports local images, registry images, and tar archives, with optional SARIF upload and GitHub Issue creation.</p>
+
+            <p><strong>Action Path:</strong> <code>qualys/qualys-github/container-scan@v1</code></p>
+
+            <h2>Inputs</h2>
+
+            <h3>Authentication</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Input</th>
+                        <th>Required</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>qualys_access_token</code></td>
+                        <td>Yes</td>
+                        <td>-</td>
+                        <td>Qualys API access token for authentication</td>
+                    </tr>
+                    <tr>
+                        <td><code>qualys_pod</code></td>
+                        <td>Yes</td>
+                        <td>-</td>
+                        <td>Qualys platform POD (US1, US2, US3, US4, EU1, EU2, IN1, CA1, AU1, AE1, JP1, KSA1)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Scan Target</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Input</th>
+                        <th>Required</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>image_id</code></td>
+                        <td>Yes</td>
+                        <td>-</td>
+                        <td>Container image to scan (name:tag, digest, or local image ID)</td>
+                    </tr>
+                    <tr>
+                        <td><code>image_tar</code></td>
+                        <td>No</td>
+                        <td>-</td>
+                        <td>Path to a tar archive of the image (alternative to image_id)</td>
+                    </tr>
+                    <tr>
+                        <td><code>platform</code></td>
+                        <td>No</td>
+                        <td>linux/amd64</td>
+                        <td>Target platform for multi-arch images (linux/amd64, linux/arm64)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Scan Options</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Input</th>
+                        <th>Required</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>scan_secrets</code></td>
+                        <td>No</td>
+                        <td>false</td>
+                        <td>Enable secrets detection in container layers</td>
+                    </tr>
+                    <tr>
+                        <td><code>scan_malware</code></td>
+                        <td>No</td>
+                        <td>false</td>
+                        <td>Enable malware detection in container</td>
+                    </tr>
+                    <tr>
+                        <td><code>offline_mode</code></td>
+                        <td>No</td>
+                        <td>false</td>
+                        <td>Scan without uploading results to Qualys platform</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Thresholds and Policy</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Input</th>
+                        <th>Required</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>max_critical</code></td>
+                        <td>No</td>
+                        <td>-1</td>
+                        <td>Maximum allowed critical vulnerabilities (-1 = unlimited)</td>
+                    </tr>
+                    <tr>
+                        <td><code>max_high</code></td>
+                        <td>No</td>
+                        <td>-1</td>
+                        <td>Maximum allowed high vulnerabilities (-1 = unlimited)</td>
+                    </tr>
+                    <tr>
+                        <td><code>max_medium</code></td>
+                        <td>No</td>
+                        <td>-1</td>
+                        <td>Maximum allowed medium vulnerabilities (-1 = unlimited)</td>
+                    </tr>
+                    <tr>
+                        <td><code>max_low</code></td>
+                        <td>No</td>
+                        <td>-1</td>
+                        <td>Maximum allowed low vulnerabilities (-1 = unlimited)</td>
+                    </tr>
+                    <tr>
+                        <td><code>use_policy</code></td>
+                        <td>No</td>
+                        <td>false</td>
+                        <td>Use Qualys cloud policy evaluation instead of thresholds</td>
+                    </tr>
+                    <tr>
+                        <td><code>fail_on_audit</code></td>
+                        <td>No</td>
+                        <td>false</td>
+                        <td>Fail the action if policy result is AUDIT</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>GitHub Integration</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Input</th>
+                        <th>Required</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>upload_sarif</code></td>
+                        <td>No</td>
+                        <td>false</td>
+                        <td>Upload SARIF report to GitHub Security tab</td>
+                    </tr>
+                    <tr>
+                        <td><code>create_issues</code></td>
+                        <td>No</td>
+                        <td>false</td>
+                        <td>Create GitHub Issues for vulnerabilities</td>
+                    </tr>
+                    <tr>
+                        <td><code>issue_severities</code></td>
+                        <td>No</td>
+                        <td>4,5</td>
+                        <td>Severity levels to create issues for (1-5, comma-separated)</td>
+                    </tr>
+                    <tr>
+                        <td><code>issue_labels</code></td>
+                        <td>No</td>
+                        <td>security,vulnerability</td>
+                        <td>Labels to apply to created issues</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Complete Example</h2>
+
+<pre><code>name: Container Security Scan
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build container image
+        run: docker build -t myapp:${{ github.sha }} .
+
+      - name: Scan container
+        id: scan
+        uses: qualys/qualys-github/container-scan@v1
+        with:
+          qualys_access_token: ${{ secrets.QUALYS_ACCESS_TOKEN }}
+          qualys_pod: US3
+          image_id: myapp:${{ github.sha }}
+          scan_secrets: true
+          scan_malware: true
+          max_critical: 0
+          max_high: 5
+          upload_sarif: true
+          create_issues: true
+          issue_severities: '4,5'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check scan results
+        if: always()
+        run: |
+          echo "Total vulnerabilities: ${{ steps.scan.outputs.vulnerability_count }}"
+          echo "Critical: ${{ steps.scan.outputs.critical_count }}"
+          echo "High: ${{ steps.scan.outputs.high_count }}"
+          echo "Scan passed: ${{ steps.scan.outputs.scan_passed }}"</code></pre>
+
+            <h2>Scanning Remote Images</h2>
+
+            <p>To scan images from private registries, authenticate before running the scan:</p>
+
+<pre><code>- name: Login to Docker Hub
+  uses: docker/login-action@v3
+  with:
+    username: ${{ secrets.DOCKERHUB_USERNAME }}
+    password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+- name: Scan remote image
+  uses: qualys/qualys-github/container-scan@v1
+  with:
+    qualys_access_token: ${{ secrets.QUALYS_ACCESS_TOKEN }}
+    qualys_pod: US3
+    image_id: myorg/myapp:latest</code></pre>
+
+            <h2>Scanning Tar Archives</h2>
+
+            <p>Scan a previously exported image tar file:</p>
+
+<pre><code>- name: Export and scan image
+  run: docker save myapp:latest -o myapp.tar
+
+- name: Scan tar archive
+  uses: qualys/qualys-github/container-scan@v1
+  with:
+    qualys_access_token: ${{ secrets.QUALYS_ACCESS_TOKEN }}
+    qualys_pod: US3
+    image_tar: myapp.tar</code></pre>
+
+            <h2>Policy Evaluation</h2>
+
+            <p>Use Qualys cloud policies instead of local thresholds:</p>
+
+<pre><code>- name: Scan with policy
+  uses: qualys/qualys-github/container-scan@v1
+  with:
+    qualys_access_token: ${{ secrets.QUALYS_ACCESS_TOKEN }}
+    qualys_pod: US3
+    image_id: myapp:${{ github.sha }}
+    use_policy: true
+    fail_on_audit: true</code></pre>
+
+            <h2>Outputs</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Output</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>vulnerability_count</code></td>
+                        <td>Total number of vulnerabilities found</td>
+                    </tr>
+                    <tr>
+                        <td><code>critical_count</code></td>
+                        <td>Number of critical severity vulnerabilities</td>
+                    </tr>
+                    <tr>
+                        <td><code>high_count</code></td>
+                        <td>Number of high severity vulnerabilities</td>
+                    </tr>
+                    <tr>
+                        <td><code>medium_count</code></td>
+                        <td>Number of medium severity vulnerabilities</td>
+                    </tr>
+                    <tr>
+                        <td><code>low_count</code></td>
+                        <td>Number of low severity vulnerabilities</td>
+                    </tr>
+                    <tr>
+                        <td><code>secrets_count</code></td>
+                        <td>Number of secrets detected</td>
+                    </tr>
+                    <tr>
+                        <td><code>malware_count</code></td>
+                        <td>Number of malware detections</td>
+                    </tr>
+                    <tr>
+                        <td><code>policy_result</code></td>
+                        <td>Policy evaluation result (ALLOW, DENY, AUDIT, or NONE)</td>
+                    </tr>
+                    <tr>
+                        <td><code>scan_passed</code></td>
+                        <td>true/false based on thresholds or policy</td>
+                    </tr>
+                    <tr>
+                        <td><code>sarif_path</code></td>
+                        <td>Path to SARIF report file</td>
+                    </tr>
+                    <tr>
+                        <td><code>json_path</code></td>
+                        <td>Path to JSON report file</td>
+                    </tr>
+                    <tr>
+                        <td><code>issues_created</code></td>
+                        <td>Number of GitHub Issues created</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="next-steps">
+                <h3>Next Steps</h3>
+                <ul>
+                    <li><a href="code_scan.htm">Code Scan</a> - Scan source code for vulnerable dependencies</li>
+                    <li><a href="configuration.htm">Configuration</a> - Complete configuration reference</li>
+                    <li><a href="github_integration.htm">Overview</a> - Return to GitHub Actions overview</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content-footer">
+            © 2026 Qualys, Inc. All rights reserved.
+        </div>
+    </main>
+
+    <script src="../assets/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration - Azure DevOps - Qualys CI/CD Security Integration</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="nav-header">
+            <h1>Qualys CI/CD Security Integration</h1>
+            <div class="subtitle">Documentation</div>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-section">
+                <a class="nav-link" href="../get_started/get_started.htm">
+                    Get Started
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
+                    <li><a href="../get_started/get_started.htm">Overview</a></li>
+                    <li><a href="../get_started/features.htm">Features</a></li>
+                    <li><a href="../get_started/supported_platforms.htm">Supported Platforms</a></li>
+                </ul>
+            </li>
+            <li class="nav-section">
+                <a class="nav-link" href="../concepts/concepts.htm">
+                    Concepts
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
+                    <li><a href="../concepts/concepts.htm">How It Works</a></li>
+                    <li><a href="../concepts/scanning_workflow.htm">Scanning Workflow</a></li>
+                    <li><a href="../concepts/authentication.htm">Authentication</a></li>
+                </ul>
+            </li>
+            <li class="nav-section">
+                <a class="nav-link" href="../github/github_integration.htm">
+                    GitHub Actions
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
+                    <li><a href="../github/github_integration.htm">Overview</a></li>
+                    <li><a href="../github/container_scan.htm">Container Scan</a></li>
+                    <li><a href="../github/code_scan.htm">Code Scan</a></li>
+                    <li><a href="../github/configuration.htm">Configuration</a></li>
+                </ul>
+            </li>
+            <li class="nav-section">
+                <a class="nav-link" href="../gitlab/gitlab_integration.htm">
+                    GitLab CI
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
+                    <li><a href="../gitlab/gitlab_integration.htm">Overview</a></li>
+                    <li><a href="../gitlab/ci_component.htm">CI Component</a></li>
+                    <li><a href="../gitlab/configuration.htm">Configuration</a></li>
+                </ul>
+            </li>
+            <li class="nav-section">
+                <a class="nav-link" href="../jenkins/jenkins_integration.htm">
+                    Jenkins
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
+                    <li><a href="../jenkins/jenkins_integration.htm">Overview</a></li>
+                    <li><a href="../jenkins/qscanner_backend.htm">QScanner Backend</a></li>
+                    <li><a href="../jenkins/cicd_sensor.htm">CICD Sensor</a></li>
+                    <li><a href="../jenkins/configuration.htm">Configuration</a></li>
+                </ul>
+            </li>
+            <li class="nav-section">
+                <a class="nav-link" href="ado_integration.htm">
+                    Azure DevOps
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
+                    <li><a href="ado_integration.htm">Overview</a></li>
+                    <li><a href="container_scan.htm">Container Scan</a></li>
+                    <li><a href="code_scan.htm">Code Scan</a></li>
+                    <li><a href="configuration.htm">Configuration</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <div class="content-header">
+            <div class="breadcrumb">
+                <a href="../index.html">Home</a>
+                <span>›</span>
+                <a href="ado_integration.htm">Azure DevOps</a>
+                <span>›</span>
+                <a href="configuration.htm">Configuration</a>
+            </div>
+        </div>
+        <div class="content-body">
+            <h1>Azure DevOps Configuration Reference</h1>
+
+            <p>This page provides a complete reference for all configuration options available in the Qualys Azure DevOps extension.</p>
+
+            <h2>Service Connection Setup</h2>
+
+            <p>Before using the Qualys tasks, create a service connection:</p>
+
+            <ol>
+                <li>Go to <strong>Project Settings > Service connections</strong></li>
+                <li>Click <strong>New service connection</strong></li>
+                <li>Select <strong>Qualys API Connection</strong></li>
+                <li>Configure the connection:
+                    <ul>
+                        <li><strong>POD</strong>: Select your Qualys platform POD</li>
+                        <li><strong>Access Token</strong>: Enter your Qualys API access token</li>
+                        <li><strong>Service connection name</strong>: Enter a name (e.g., "QualysConnection")</li>
+                    </ul>
+                </li>
+                <li>Click <strong>Save</strong></li>
+            </ol>
+
+            <h2>Available PODs</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>POD</th>
+                        <th>Region</th>
+                        <th>API URL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>US1</td>
+                        <td>United States</td>
+                        <td>qualysapi.qualys.com</td>
+                    </tr>
+                    <tr>
+                        <td>US2</td>
+                        <td>United States</td>
+                        <td>qualysapi.qg2.apps.qualys.com</td>
+                    </tr>
+                    <tr>
+                        <td>US3</td>
+                        <td>United States</td>
+                        <td>qualysapi.qg3.apps.qualys.com</td>
+                    </tr>
+                    <tr>
+                        <td>US4</td>
+                        <td>United States</td>
+                        <td>qualysapi.qg4.apps.qualys.com</td>
+                    </tr>
+                    <tr>
+                        <td>EU1</td>
+                        <td>Europe</td>
+                        <td>qualysapi.qualys.eu</td>
+                    </tr>
+                    <tr>
+                        <td>EU2</td>
+                        <td>Europe</td>
+                        <td>qualysapi.qg2.apps.qualys.eu</td>
+                    </tr>
+                    <tr>
+                        <td>IN1</td>
+                        <td>India</td>
+                        <td>qualysapi.qg1.apps.qualys.in</td>
+                    </tr>
+                    <tr>
+                        <td>CA1</td>
+                        <td>Canada</td>
+                        <td>qualysapi.qg1.apps.qualys.ca</td>
+                    </tr>
+                    <tr>
+                        <td>AU1</td>
+                        <td>Australia</td>
+                        <td>qualysapi.qg1.apps.qualys.com.au</td>
+                    </tr>
+                    <tr>
+                        <td>AE1</td>
+                        <td>UAE</td>
+                        <td>qualysapi.qg1.apps.qualys.ae</td>
+                    </tr>
+                    <tr>
+                        <td>JP1</td>
+                        <td>Japan</td>
+                        <td>qualysapi.qg1.apps.qualys.co.jp</td>
+                    </tr>
+                    <tr>
+                        <td>KSA1</td>
+                        <td>Saudi Arabia</td>
+                        <td>qualysapi.qg1.apps.qualys.sa</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>QualysContainerScan@1 Inputs</h2>
+
+            <h3>Required Inputs</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Input</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>qualysConnection</code></td>
+                        <td>Qualys API service connection name</td>
+                    </tr>
+                    <tr>
+                        <td><code>imageId</code></td>
+                        <td>Container image to scan (name:tag or digest)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Scan Target</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Input</th>
+                        <th>Required</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>imageId</code></td>
+                        <td>Yes*</td>
+                        <td>-</td>
+                        <td>Container image to scan. Required if imageTar not specified.</td>
+                    </tr>
+                    <tr>
+                        <td><code>imageTar</code></td>
+                        <td>No</td>
+                        <td>-</td>
+                        <td>Path to image tar archive.</td>
+                    </tr>
+                    <tr>
+                        <td><code>platform</code></td>
+                        <td>No</td>
+                        <td>linux/amd64</td>
+                        <td>Target platform for multi-arch images.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Scan Options</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Input</th>
+                        <th>Required</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>scanSecrets</code></td>
+                        <td>No</td>
+                        <td>false</td>
+                        <td>Enable secrets detection.</td>
+                    </tr>
+                    <tr>
+                        <td><code>scanMalware</code></td>
+                        <td>No</td>
+                        <td>false</td>
+                        <td>Enable malware detection.</td>
+                    </tr>
+                    <tr>
+                        <td><code>offlineMode</code></td>
+                        <td>No</td>
+                        <td>false</td>
+                        <td>Scan without uploading to Qualys platform.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>QualysCodeScan@1 Inputs</h2>
+
+            <h3>Required Inputs</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Input</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>qualysConnection</code></td>
+                        <td>Qualys API service connection name</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Scan Target</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Input</th>
+                        <th>Required</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>scanPath</code></td>
+                        <td>No</td>
+                        <td>$(Build.SourcesDirectory)</td>
+                        <td>Path to directory to scan.</td>
+                    </tr>
+                    <tr>
+                        <td><code>excludeDirs</code></td>
+                        <td>No</td>
+                        <td>-</td>
+                        <td>Comma-separated directories to exclude.</td>
+                    </tr>
+                    <tr>
+                        <td><code>includeDev</code></td>
+                        <td>No</td>
+                        <td>false</td>
+                        <td>Include development dependencies.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>SBOM Options</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Input</th>
+                        <th>Required</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>generateSbom</code></td>
+                        <td>No</td>
+                        <td>false</td>
+                        <td>Generate Software Bill of Materials.</td>
+                    </tr>
+                    <tr>
+                        <td><code>sbomFormat</code></td>
+                        <td>No</td>
+                        <td>spdx</td>
+                        <td>SBOM format: spdx or cyclonedx.</td>
+                    </tr>
+                    <tr>
+                        <td><code>sbomOutput</code></td>
+                        <td>No</td>
+                        <td>sbom.json</td>
+                        <td>Output filename for SBOM.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Scan Options</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Input</th>
+                        <th>Required</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>scanSecrets</code></td>
+                        <td>No</td>
+                        <td>false</td>
+                        <td>Enable secrets detection.</td>
+                    </tr>
+                    <tr>
+                        <td><code>offlineMode</code></td>
+                        <td>No</td>
+                        <td>false</td>
+                        <td>Scan without uploading to Qualys platform.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Common Inputs (Both Tasks)</h2>
+
+            <h3>Threshold Configuration</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Input</th>
+                        <th>Required</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>maxCritical</code></td>
+                        <td>No</td>
+                        <td>-1</td>
+                        <td>Maximum critical vulnerabilities (-1 = unlimited).</td>
+                    </tr>
+                    <tr>
+                        <td><code>maxHigh</code></td>
+                        <td>No</td>
+                        <td>-1</td>
+                        <td>Maximum high vulnerabilities (-1 = unlimited).</td>
+                    </tr>
+                    <tr>
+                        <td><code>maxMedium</code></td>
+                        <td>No</td>
+                        <td>-1</td>
+                        <td>Maximum medium vulnerabilities (-1 = unlimited).</td>
+                    </tr>
+                    <tr>
+                        <td><code>maxLow</code></td>
+                        <td>No</td>
+                        <td>-1</td>
+                        <td>Maximum low vulnerabilities (-1 = unlimited).</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Policy Configuration</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Input</th>
+                        <th>Required</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>usePolicyEvaluation</code></td>
+                        <td>No</td>
+                        <td>false</td>
+                        <td>Enable Qualys cloud policy evaluation.</td>
+                    </tr>
+                    <tr>
+                        <td><code>failOnAudit</code></td>
+                        <td>No</td>
+                        <td>false</td>
+                        <td>Fail pipeline on AUDIT policy result.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Output Options</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Input</th>
+                        <th>Required</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>publishResults</code></td>
+                        <td>No</td>
+                        <td>false</td>
+                        <td>Publish SARIF to Azure DevOps Advanced Security.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Work Item Creation</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Input</th>
+                        <th>Required</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>createWorkItems</code></td>
+                        <td>No</td>
+                        <td>false</td>
+                        <td>Create Azure Boards work items.</td>
+                    </tr>
+                    <tr>
+                        <td><code>workItemSeverities</code></td>
+                        <td>No</td>
+                        <td>4,5</td>
+                        <td>Severity levels for work items (comma-separated).</td>
+                    </tr>
+                    <tr>
+                        <td><code>workItemType</code></td>
+                        <td>No</td>
+                        <td>Bug</td>
+                        <td>Work item type to create.</td>
+                    </tr>
+                    <tr>
+                        <td><code>workItemAreaPath</code></td>
+                        <td>No</td>
+                        <td>-</td>
+                        <td>Area path for work items.</td>
+                    </tr>
+                    <tr>
+                        <td><code>workItemIterationPath</code></td>
+                        <td>No</td>
+                        <td>-</td>
+                        <td>Iteration path for work items.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Output Variables</h2>
+
+            <h3>Common Outputs (Both Tasks)</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Variable</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>vulnerabilityCount</code></td>
+                        <td>Total number of vulnerabilities found.</td>
+                    </tr>
+                    <tr>
+                        <td><code>criticalCount</code></td>
+                        <td>Number of critical vulnerabilities.</td>
+                    </tr>
+                    <tr>
+                        <td><code>highCount</code></td>
+                        <td>Number of high vulnerabilities.</td>
+                    </tr>
+                    <tr>
+                        <td><code>mediumCount</code></td>
+                        <td>Number of medium vulnerabilities.</td>
+                    </tr>
+                    <tr>
+                        <td><code>lowCount</code></td>
+                        <td>Number of low vulnerabilities.</td>
+                    </tr>
+                    <tr>
+                        <td><code>secretsCount</code></td>
+                        <td>Number of secrets detected.</td>
+                    </tr>
+                    <tr>
+                        <td><code>policyResult</code></td>
+                        <td>Policy result: ALLOW, DENY, AUDIT, or NONE.</td>
+                    </tr>
+                    <tr>
+                        <td><code>scanPassed</code></td>
+                        <td>Boolean - scan passed thresholds/policy.</td>
+                    </tr>
+                    <tr>
+                        <td><code>sarifPath</code></td>
+                        <td>Path to SARIF report file.</td>
+                    </tr>
+                    <tr>
+                        <td><code>jsonPath</code></td>
+                        <td>Path to JSON report file.</td>
+                    </tr>
+                    <tr>
+                        <td><code>workItemsCreated</code></td>
+                        <td>Number of work items created.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Container Scan Specific Outputs</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Variable</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>malwareCount</code></td>
+                        <td>Number of malware detections.</td>
+                    </tr>
+                    <tr>
+                        <td><code>imageDigest</code></td>
+                        <td>Digest of the scanned image.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Code Scan Specific Outputs</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Variable</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>packagesCount</code></td>
+                        <td>Total packages/dependencies found.</td>
+                    </tr>
+                    <tr>
+                        <td><code>sbomPath</code></td>
+                        <td>Path to generated SBOM file.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Work Item OAuth Token</h2>
+
+            <p>To create work items, the task needs access to the Azure DevOps API. Configure OAuth token access using one of these methods:</p>
+
+            <h3>Method 1: Pipeline Setting</h3>
+            <p>Enable "Allow scripts to access OAuth token" in the pipeline's Agent job settings.</p>
+
+            <h3>Method 2: Environment Variable</h3>
+
+<pre><code>- task: QualysContainerScan@1
+  inputs:
+    qualysConnection: 'QualysConnection'
+    imageId: 'myapp:latest'
+    createWorkItems: true
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)</code></pre>
+
+            <h2>Example: Full Configuration</h2>
+
+<pre><code>trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  # Build and push container image
+  - task: Docker@2
+    displayName: 'Build and Push Image'
+    inputs:
+      containerRegistry: 'myAcrConnection'
+      repository: 'myapp'
+      command: 'buildAndPush'
+      tags: '$(Build.BuildId)'
+
+  # Container security scan
+  - task: QualysContainerScan@1
+    name: containerScan
+    displayName: 'Qualys Container Scan'
+    inputs:
+      # Service connection
+      qualysConnection: 'QualysConnection'
+
+      # Scan target
+      imageId: 'myacr.azurecr.io/myapp:$(Build.BuildId)'
+      platform: 'linux/amd64'
+
+      # Scan options
+      scanSecrets: true
+      scanMalware: true
+      offlineMode: false
+
+      # Thresholds
+      maxCritical: 0
+      maxHigh: 5
+      maxMedium: 20
+      maxLow: -1
+
+      # Policy
+      usePolicyEvaluation: false
+      failOnAudit: false
+
+      # Output
+      publishResults: true
+
+      # Work items
+      createWorkItems: true
+      workItemSeverities: '4,5'
+      workItemType: 'Bug'
+      workItemAreaPath: 'MyProject\Security'
+      workItemIterationPath: 'MyProject\Sprint 1'
+    env:
+      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+
+  # Code security scan
+  - task: QualysCodeScan@1
+    name: codeScan
+    displayName: 'Qualys Code Scan'
+    inputs:
+      # Service connection
+      qualysConnection: 'QualysConnection'
+
+      # Scan target
+      scanPath: '$(Build.SourcesDirectory)'
+      excludeDirs: 'node_modules,vendor,dist,build,test'
+      includeDev: false
+
+      # Scan options
+      scanSecrets: true
+      offlineMode: false
+
+      # SBOM
+      generateSbom: true
+      sbomFormat: 'spdx'
+      sbomOutput: '$(Build.ArtifactStagingDirectory)/sbom.json'
+
+      # Thresholds
+      maxCritical: 0
+      maxHigh: 10
+      maxMedium: -1
+      maxLow: -1
+
+      # Policy
+      usePolicyEvaluation: false
+      failOnAudit: false
+
+      # Output
+      publishResults: true
+
+      # Work items
+      createWorkItems: true
+      workItemSeverities: '4,5'
+    env:
+      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+
+  # Display results
+  - script: |
+      echo "=== Container Scan Results ==="
+      echo "Vulnerabilities: $(containerScan.vulnerabilityCount)"
+      echo "Critical: $(containerScan.criticalCount)"
+      echo "High: $(containerScan.highCount)"
+      echo "Malware: $(containerScan.malwareCount)"
+      echo "Scan passed: $(containerScan.scanPassed)"
+      echo ""
+      echo "=== Code Scan Results ==="
+      echo "Vulnerabilities: $(codeScan.vulnerabilityCount)"
+      echo "Critical: $(codeScan.criticalCount)"
+      echo "Packages: $(codeScan.packagesCount)"
+      echo "Scan passed: $(codeScan.scanPassed)"
+    displayName: 'Show Scan Results'
+
+  # Publish artifacts
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathToPublish: '$(codeScan.sbomPath)'
+      artifactName: 'sbom'
+    displayName: 'Publish SBOM'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathToPublish: '$(containerScan.sarifPath)'
+      artifactName: 'container-security-report'
+    displayName: 'Publish Container SARIF'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathToPublish: '$(codeScan.sarifPath)'
+      artifactName: 'code-security-report'
+    displayName: 'Publish Code SARIF'</code></pre>
+
+            <h2>Requirements</h2>
+
+            <ul>
+                <li>Azure DevOps organization</li>
+                <li>Azure Pipelines (cloud or self-hosted)</li>
+                <li>Qualys subscription with Container Security permissions</li>
+                <li>Docker (for container scanning)</li>
+                <li>Azure DevOps Advanced Security (for SARIF publishing)</li>
+            </ul>
+
+            <div class="next-steps">
+                <h3>Next Steps</h3>
+                <ul>
+                    <li><a href="container_scan.htm">Container Scan</a> - Container scanning details</li>
+                    <li><a href="code_scan.htm">Code Scan</a> - Code scanning details</li>
+                    <li><a href="ado_integration.htm">Overview</a> - Return to Azure DevOps overview</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content-footer">
+            © 2026 Qualys, Inc. All rights reserved.
+        </div>
+    </main>
+
+    <script src="../assets/script.js"></script>
+</body>
+</html>
