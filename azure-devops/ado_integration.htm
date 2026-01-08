@@ -10,26 +10,72 @@
     <nav class="sidebar">
         <div class="nav-header">
             <h1>Qualys CI/CD Security Integration</h1>
+            <div class="subtitle">Documentation</div>
         </div>
         <ul class="nav-menu">
             <li class="nav-section">
-                <a href="../get_started/get_started.htm">Get Started</a>
+                <a class="nav-link" href="../get_started/get_started.htm">
+                    Get Started
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
+                    <li><a href="../get_started/get_started.htm">Overview</a></li>
+                    <li><a href="../get_started/features.htm">Features</a></li>
+                    <li><a href="../get_started/supported_platforms.htm">Supported Platforms</a></li>
+                </ul>
             </li>
             <li class="nav-section">
-                <a href="../concepts/concepts.htm">Concepts</a>
+                <a class="nav-link" href="../concepts/concepts.htm">
+                    Concepts
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
+                    <li><a href="../concepts/concepts.htm">How It Works</a></li>
+                    <li><a href="../concepts/scanning_workflow.htm">Scanning Workflow</a></li>
+                    <li><a href="../concepts/authentication.htm">Authentication</a></li>
+                </ul>
             </li>
             <li class="nav-section">
-                <a href="../github/github_integration.htm">GitHub Actions</a>
+                <a class="nav-link" href="../github/github_integration.htm">
+                    GitHub Actions
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
+                    <li><a href="../github/github_integration.htm">Overview</a></li>
+                    <li><a href="../github/container_scan.htm">Container Scan</a></li>
+                    <li><a href="../github/code_scan.htm">Code Scan</a></li>
+                    <li><a href="../github/configuration.htm">Configuration</a></li>
+                </ul>
             </li>
             <li class="nav-section">
-                <a href="../gitlab/gitlab_integration.htm">GitLab CI</a>
+                <a class="nav-link" href="../gitlab/gitlab_integration.htm">
+                    GitLab CI
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
+                    <li><a href="../gitlab/gitlab_integration.htm">Overview</a></li>
+                    <li><a href="../gitlab/ci_component.htm">CI Component</a></li>
+                    <li><a href="../gitlab/configuration.htm">Configuration</a></li>
+                </ul>
             </li>
             <li class="nav-section">
-                <a href="../jenkins/jenkins_integration.htm">Jenkins</a>
+                <a class="nav-link" href="../jenkins/jenkins_integration.htm">
+                    Jenkins
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
+                    <li><a href="../jenkins/jenkins_integration.htm">Overview</a></li>
+                    <li><a href="../jenkins/qscanner_backend.htm">QScanner Backend</a></li>
+                    <li><a href="../jenkins/cicd_sensor.htm">CICD Sensor</a></li>
+                    <li><a href="../jenkins/configuration.htm">Configuration</a></li>
+                </ul>
             </li>
             <li class="nav-section">
-                <a href="ado_integration.htm">Azure DevOps</a>
-                <ul>
+                <a class="nav-link" href="ado_integration.htm">
+                    Azure DevOps
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
                     <li><a href="ado_integration.htm">Overview</a></li>
                     <li><a href="container_scan.htm">Container Scan</a></li>
                     <li><a href="code_scan.htm">Code Scan</a></li>
@@ -38,83 +84,90 @@
             </li>
         </ul>
     </nav>
+
     <main class="content">
-        <div class="breadcrumb">
-            <a href="../index.htm">Home</a> &gt; Azure DevOps
+        <div class="content-header">
+            <div class="breadcrumb">
+                <a href="../index.html">Home</a>
+                <span>›</span>
+                <a href="ado_integration.htm">Azure DevOps</a>
+            </div>
         </div>
+        <div class="content-body">
+            <h1>Azure DevOps Integration</h1>
 
-        <h1>Azure DevOps Integration</h1>
+            <p>The Qualys Azure DevOps extension provides pipeline tasks for container and code scanning. Scan results can be published as SARIF reports and automatically create Azure Boards work items for vulnerability tracking.</p>
 
-        <p>The Qualys Azure DevOps extension provides pipeline tasks for container and code scanning. Scan results can be published as SARIF reports and automatically create Azure Boards work items for vulnerability tracking.</p>
+            <p><a href="https://github.com/nelssec/qualys-ado">View Source Repository →</a></p>
 
-        <h2>Available Tasks</h2>
+            <h2>Available Tasks</h2>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Task</th>
-                    <th>Purpose</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><code>QualysContainerScan@1</code></td>
-                    <td>Scan Docker/OCI container images</td>
-                </tr>
-                <tr>
-                    <td><code>QualysCodeScan@1</code></td>
-                    <td>Scan source code for vulnerable dependencies (SCA)</td>
-                </tr>
-            </tbody>
-        </table>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Task</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>QualysContainerScan@1</code></td>
+                        <td>Scan Docker/OCI container images</td>
+                    </tr>
+                    <tr>
+                        <td><code>QualysCodeScan@1</code></td>
+                        <td>Scan source code for vulnerable dependencies (SCA)</td>
+                    </tr>
+                </tbody>
+            </table>
 
-        <h2>Capabilities</h2>
+            <h2>Capabilities</h2>
 
-        <ul>
-            <li><strong>Container Scanning</strong> - Scan images for OS and package vulnerabilities</li>
-            <li><strong>Code Scanning (SCA)</strong> - Scan repositories for vulnerable dependencies</li>
-            <li><strong>Secrets Detection</strong> - Identify hardcoded secrets</li>
-            <li><strong>SBOM Generation</strong> - Generate SPDX or CycloneDX SBOM</li>
-            <li><strong>Policy Evaluation</strong> - Use Qualys cloud policies or thresholds</li>
-            <li><strong>SARIF Publishing</strong> - Publish results to Azure DevOps Advanced Security</li>
-            <li><strong>Work Item Creation</strong> - Create Azure Boards bugs for vulnerabilities</li>
-            <li><strong>Offline Scanning</strong> - Scan without uploading to Qualys platform</li>
-        </ul>
+            <ul>
+                <li><strong>Container Scanning</strong> – Scan images for OS and package vulnerabilities</li>
+                <li><strong>Code Scanning (SCA)</strong> – Scan repositories for vulnerable dependencies</li>
+                <li><strong>Secrets Detection</strong> – Identify hardcoded secrets</li>
+                <li><strong>SBOM Generation</strong> – Generate SPDX or CycloneDX SBOM</li>
+                <li><strong>Policy Evaluation</strong> – Use Qualys cloud policies or thresholds</li>
+                <li><strong>SARIF Publishing</strong> – Publish results to Azure DevOps Advanced Security</li>
+                <li><strong>Work Item Creation</strong> – Create Azure Boards bugs for vulnerabilities</li>
+                <li><strong>Offline Scanning</strong> – Scan without uploading to Qualys platform</li>
+            </ul>
 
-        <h2>Prerequisites</h2>
+            <h2>Prerequisites</h2>
 
-        <ul>
-            <li>Azure DevOps organization</li>
-            <li>Azure Pipelines (cloud or self-hosted)</li>
-            <li>A Qualys subscription with Container Security permissions</li>
-            <li>Docker (for container scanning)</li>
-        </ul>
+            <ul>
+                <li>Azure DevOps organization</li>
+                <li>Azure Pipelines (cloud or self-hosted)</li>
+                <li>A Qualys subscription with Container Security permissions</li>
+                <li>Docker (for container scanning)</li>
+            </ul>
 
-        <h2>Installation</h2>
+            <h2>Installation</h2>
 
-        <ol>
-            <li>Navigate to your Azure DevOps organization</li>
-            <li>Go to <strong>Organization Settings &gt; Extensions</strong></li>
-            <li>Click <strong>Browse Marketplace</strong></li>
-            <li>Search for "Qualys Security Scanner"</li>
-            <li>Click <strong>Get it free</strong> and install</li>
-        </ol>
+            <ol>
+                <li>Navigate to your Azure DevOps organization</li>
+                <li>Go to <strong>Organization Settings > Extensions</strong></li>
+                <li>Click <strong>Browse Marketplace</strong></li>
+                <li>Search for "Qualys Security Scanner"</li>
+                <li>Click <strong>Get it free</strong> and install</li>
+            </ol>
 
-        <h2>Create Service Connection</h2>
+            <h2>Create Service Connection</h2>
 
-        <ol>
-            <li>Go to <strong>Project Settings &gt; Service connections</strong></li>
-            <li>Click <strong>New service connection</strong></li>
-            <li>Select <strong>Qualys API Connection</strong></li>
-            <li>Enter your Qualys POD and API access token</li>
-            <li>Save as "QualysConnection" (or custom name)</li>
-        </ol>
+            <ol>
+                <li>Go to <strong>Project Settings > Service connections</strong></li>
+                <li>Click <strong>New service connection</strong></li>
+                <li>Select <strong>Qualys API Connection</strong></li>
+                <li>Enter your Qualys POD and API access token</li>
+                <li>Save as "QualysConnection" (or custom name)</li>
+            </ol>
 
-        <h2>Quick Start</h2>
+            <h2>Quick Start</h2>
 
-        <h3>Container Scan</h3>
+            <h3>Container Scan</h3>
 
-        <pre><code>trigger:
+<pre><code>trigger:
   - main
 
 pool:
@@ -136,9 +189,9 @@ steps:
       scanSecrets: true
       publishResults: true</code></pre>
 
-        <h3>Code Scan</h3>
+            <h3>Code Scan</h3>
 
-        <pre><code>trigger:
+<pre><code>trigger:
   - main
 
 pool:
@@ -156,11 +209,11 @@ steps:
       sbomFormat: 'spdx'
       publishResults: true</code></pre>
 
-        <h2>Output Variables</h2>
+            <h2>Output Variables</h2>
 
-        <p>Access scan results in subsequent tasks:</p>
+            <p>Access scan results in subsequent tasks:</p>
 
-        <pre><code>- task: QualysContainerScan@1
+<pre><code>- task: QualysContainerScan@1
   name: qualysScan
   inputs:
     qualysConnection: 'QualysConnection'
@@ -172,11 +225,11 @@ steps:
     echo "Policy: $(qualysScan.policyResult)"
   displayName: 'Show Results'</code></pre>
 
-        <h2>Work Item Creation</h2>
+            <h2>Work Item Creation</h2>
 
-        <p>Automatically create Azure Boards bugs for vulnerabilities:</p>
+            <p>Automatically create Azure Boards bugs for vulnerabilities:</p>
 
-        <pre><code>- task: QualysContainerScan@1
+<pre><code>- task: QualysContainerScan@1
   displayName: 'Scan and Create Work Items'
   inputs:
     qualysConnection: 'QualysConnection'
@@ -187,19 +240,26 @@ steps:
   env:
     SYSTEM_ACCESSTOKEN: $(System.AccessToken)</code></pre>
 
-        <div class="important">
-            <div class="note-title">Important</div>
-            <p>To create work items, either enable "Allow scripts to access OAuth token" in pipeline settings, or pass the token via environment variable as shown above.</p>
+            <div class="important">
+                <div class="note-title">Important</div>
+                <p>To create work items, either enable "Allow scripts to access OAuth token" in pipeline settings, or pass the token via environment variable as shown above.</p>
+            </div>
+
+            <div class="next-steps">
+                <h3>Next Steps</h3>
+                <ul>
+                    <li><a href="container_scan.htm">Container Scan</a> – Detailed container scan configuration</li>
+                    <li><a href="code_scan.htm">Code Scan</a> – Detailed code scan configuration</li>
+                    <li><a href="configuration.htm">Configuration</a> – All configuration options</li>
+                </ul>
+            </div>
         </div>
 
-        <div class="next-steps">
-            <h3>Next Steps</h3>
-            <ul>
-                <li><a href="container_scan.htm">Container Scan</a> - Detailed container scan configuration</li>
-                <li><a href="code_scan.htm">Code Scan</a> - Detailed code scan configuration</li>
-                <li><a href="configuration.htm">Configuration</a> - All configuration options</li>
-            </ul>
+        <div class="content-footer">
+            © 2026 Qualys, Inc. All rights reserved.
         </div>
     </main>
+
+    <script src="../assets/script.js"></script>
 </body>
 </html>

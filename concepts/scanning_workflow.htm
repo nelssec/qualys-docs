@@ -3,52 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scanning Workflow - Qualys Container Security Integration</title>
+    <title>Scanning Workflow - Qualys CI/CD Security Integration</title>
     <link rel="stylesheet" href="../assets/styles.css">
 </head>
 <body>
     <nav class="sidebar">
         <div class="nav-header">
-            <h1>Qualys Container Security Integration</h1>
+            <h1>Qualys CI/CD Security Integration</h1>
+            <div class="subtitle">Documentation</div>
         </div>
         <ul class="nav-menu">
             <li class="nav-section">
-                <a href="../get_started/get_started.htm">Get Started</a>
+                <a class="nav-link" href="../get_started/get_started.htm">
+                    Get Started
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
+                    <li><a href="../get_started/get_started.htm">Overview</a></li>
+                    <li><a href="../get_started/features.htm">Features</a></li>
+                    <li><a href="../get_started/supported_platforms.htm">Supported Platforms</a></li>
+                </ul>
             </li>
             <li class="nav-section">
-                <a href="concepts.htm">Concepts</a>
-                <ul>
+                <a class="nav-link" href="concepts.htm">
+                    Concepts
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
                     <li><a href="concepts.htm">How It Works</a></li>
                     <li><a href="scanning_workflow.htm">Scanning Workflow</a></li>
                     <li><a href="authentication.htm">Authentication</a></li>
                 </ul>
             </li>
             <li class="nav-section">
-                <a href="../github/github_integration.htm">GitHub Integration</a>
+                <a class="nav-link" href="../github/github_integration.htm">
+                    GitHub Actions
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
+                    <li><a href="../github/github_integration.htm">Overview</a></li>
+                    <li><a href="../github/container_scan.htm">Container Scan</a></li>
+                    <li><a href="../github/code_scan.htm">Code Scan</a></li>
+                    <li><a href="../github/configuration.htm">Configuration</a></li>
+                </ul>
             </li>
             <li class="nav-section">
-                <a href="../azure/azure_integration.htm">Azure Integration</a>
+                <a class="nav-link" href="../gitlab/gitlab_integration.htm">
+                    GitLab CI
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
+                    <li><a href="../gitlab/gitlab_integration.htm">Overview</a></li>
+                    <li><a href="../gitlab/ci_component.htm">CI Component</a></li>
+                    <li><a href="../gitlab/configuration.htm">Configuration</a></li>
+                </ul>
             </li>
             <li class="nav-section">
-                <a href="../aws/aws_integration.htm">AWS Integration</a>
+                <a class="nav-link" href="../jenkins/jenkins_integration.htm">
+                    Jenkins
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
+                    <li><a href="../jenkins/jenkins_integration.htm">Overview</a></li>
+                    <li><a href="../jenkins/qscanner_backend.htm">QScanner Backend</a></li>
+                    <li><a href="../jenkins/cicd_sensor.htm">CICD Sensor</a></li>
+                    <li><a href="../jenkins/configuration.htm">Configuration</a></li>
+                </ul>
             </li>
             <li class="nav-section">
-                <a href="../kubernetes/kubernetes_integration.htm">Kubernetes Integration</a>
+                <a class="nav-link" href="../azure-devops/ado_integration.htm">
+                    Azure DevOps
+                    <span class="icon">▶</span>
+                </a>
+                <ul class="nav-submenu">
+                    <li><a href="../azure-devops/ado_integration.htm">Overview</a></li>
+                    <li><a href="../azure-devops/container_scan.htm">Container Scan</a></li>
+                    <li><a href="../azure-devops/code_scan.htm">Code Scan</a></li>
+                    <li><a href="../azure-devops/configuration.htm">Configuration</a></li>
+                </ul>
             </li>
         </ul>
     </nav>
+
     <main class="content">
-        <div class="breadcrumb">
-            <a href="../index.htm">Home</a> &gt; <a href="concepts.htm">Concepts</a> &gt; Scanning Workflow
+        <div class="content-header">
+            <div class="breadcrumb">
+                <a href="../index.html">Home</a>
+                <span>›</span>
+                <a href="concepts.htm">Concepts</a>
+                <span>›</span>
+                Scanning Workflow
+            </div>
         </div>
+        <div class="content-body">
+            <h1>Scanning Workflow</h1>
 
-        <h1>Scanning Workflow</h1>
+            <p>This section describes the detailed scanning workflow from image detection through result delivery.</p>
 
-        <p>This section describes the detailed scanning workflow from image detection through result delivery.</p>
+            <h2>CI/CD Scanning Workflow</h2>
 
-        <h2>CI/CD Scanning Workflow</h2>
-
-        <pre><code>┌─────────────────────────────────────────────────────────────────────┐
+<pre><code>┌─────────────────────────────────────────────────────────────────────┐
 │                          CI/CD Pipeline                              │
 │                                                                      │
 │  1. Checkout   2. Build     3. Scan       4. Evaluate   5. Deploy   │
@@ -65,148 +119,134 @@
 │                            └─────────┘  └─────────┘                 │
 └─────────────────────────────────────────────────────────────────────┘</code></pre>
 
-        <h3>Step-by-Step Process</h3>
+            <h3>Step-by-Step Process</h3>
 
-        <ol>
-            <li><strong>Image Reference</strong> - The scanner receives the container image reference (name:tag or digest)</li>
-            <li><strong>Image Pull</strong> - The image is pulled from the registry (using provided credentials if private)</li>
-            <li><strong>Layer Extraction</strong> - Container layers are extracted and analyzed</li>
-            <li><strong>Package Detection</strong> - OS and application packages are identified</li>
-            <li><strong>Vulnerability Matching</strong> - Packages are matched against the Qualys vulnerability database</li>
-            <li><strong>Secrets Scanning</strong> - Image layers are scanned for embedded secrets (if enabled)</li>
-            <li><strong>Report Generation</strong> - SARIF and JSON reports are generated</li>
-            <li><strong>Policy Evaluation</strong> - Results are evaluated against thresholds or cloud policies</li>
-            <li><strong>Result Output</strong> - Vulnerability counts and policy result are output for pipeline decisions</li>
-        </ol>
+            <ol>
+                <li><strong>Image Reference</strong> – The scanner receives the container image reference (name:tag or digest)</li>
+                <li><strong>Image Pull</strong> – The image is pulled from the registry (using provided credentials if private)</li>
+                <li><strong>Layer Extraction</strong> – Container layers are extracted and analyzed</li>
+                <li><strong>Package Detection</strong> – OS and application packages are identified</li>
+                <li><strong>Vulnerability Matching</strong> – Packages are matched against the Qualys vulnerability database</li>
+                <li><strong>Secrets Scanning</strong> – Image layers are scanned for embedded secrets (if enabled)</li>
+                <li><strong>Report Generation</strong> – SARIF and JSON reports are generated</li>
+                <li><strong>Policy Evaluation</strong> – Results are evaluated against thresholds or cloud policies</li>
+                <li><strong>Result Output</strong> – Vulnerability counts and policy result are output for pipeline decisions</li>
+            </ol>
 
-        <h2>Event-Driven Scanning Workflow</h2>
+            <h2>Code Scanning Workflow</h2>
 
-        <p>For cloud-native workloads (AWS, Azure), the workflow is event-driven:</p>
-
-        <pre><code>┌─────────────────────────────────────────────────────────────────────┐
-│                          Event-Driven Flow                           │
+<pre><code>┌─────────────────────────────────────────────────────────────────────┐
+│                        SCA Code Scanning                             │
 │                                                                      │
-│  1. Deploy     2. Audit     3. Event      4. Process    5. Scan     │
+│  1. Checkout   2. Discover   3. Analyze    4. Evaluate   5. Report  │
 │  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐   │
-│  │Container│→ │CloudTrail│→ │EventBridge│→ │Function │→ │ Qualys  │   │
-│  │   or    │  │Activity │  │Event Hub│  │Step Func│  │  API    │   │
-│  │ Lambda  │  │  Log    │  │         │  │         │  │         │   │
-│  └─────────┘  └─────────┘  └─────────┘  └────┬────┘  └────┬────┘   │
-│                                              │            │          │
-│                                              ▼            ▼          │
-│                                         ┌─────────┐  ┌─────────┐    │
-│                                         │ Cache   │  │ Notify  │    │
-│                                         │(DynamoDB│  │  (SNS)  │    │
-│                                         │ Storage)│  │         │    │
-│                                         └─────────┘  └─────────┘    │
+│  │  Code   │→ │Manifests│→ │QScanner │→ │ Policy  │→ │ SARIF/  │   │
+│  │         │  │         │  │   SCA   │  │  Check  │  │  SBOM   │   │
+│  └─────────┘  └─────────┘  └─────────┘  └─────────┘  └─────────┘   │
 └─────────────────────────────────────────────────────────────────────┘</code></pre>
 
-        <h3>Event Processing Steps</h3>
+            <h3>Code Scan Steps</h3>
 
-        <ol>
-            <li><strong>Event Capture</strong> - Cloud audit log captures the deployment API call</li>
-            <li><strong>Event Filtering</strong> - EventBridge/Event Hub filters for relevant events</li>
-            <li><strong>Event Parsing</strong> - Lambda/Function extracts container image details</li>
-            <li><strong>Cache Check</strong> - DynamoDB/Storage lookup prevents duplicate scans</li>
-            <li><strong>Registry Registration</strong> - Image registry is registered with Qualys (if new)</li>
-            <li><strong>Scan Submission</strong> - On-demand scan request submitted to Qualys API</li>
-            <li><strong>Polling</strong> - Step Functions/Durable Functions poll for scan completion</li>
-            <li><strong>Result Retrieval</strong> - Vulnerability findings retrieved from Qualys</li>
-            <li><strong>Notification</strong> - Results sent to SNS/Service Bus for downstream processing</li>
-        </ol>
+            <ol>
+                <li><strong>Directory Scan</strong> – Recursively scan source directory for package manifests</li>
+                <li><strong>Manifest Detection</strong> – Identify package.json, requirements.txt, pom.xml, etc.</li>
+                <li><strong>Dependency Resolution</strong> – Parse manifests and resolve transitive dependencies</li>
+                <li><strong>Vulnerability Matching</strong> – Match dependencies against vulnerability database</li>
+                <li><strong>Secrets Scanning</strong> – Scan source files for hardcoded secrets (if enabled)</li>
+                <li><strong>SBOM Generation</strong> – Generate SPDX or CycloneDX SBOM (if enabled)</li>
+                <li><strong>Report Generation</strong> – Create SARIF and JSON vulnerability reports</li>
+            </ol>
 
-        <h2>Kubernetes Continuous Scanning</h2>
+            <h2>Report Types</h2>
 
-        <pre><code>┌─────────────────────────────────────────────────────────────────────┐
-│                       Kubernetes Cluster                             │
-│                                                                      │
-│  ┌─────────────────────────────────────────────────────────────┐    │
-│  │                     DaemonSet (per node)                     │    │
-│  │  ┌─────────────────────────────────────────────────────┐    │    │
-│  │  │                  Qualys Sensor                       │    │    │
-│  │  │                                                      │    │    │
-│  │  │  1. Watch container runtime for new containers       │    │    │
-│  │  │  2. Pull image layers from local cache/registry      │    │    │
-│  │  │  3. Scan for vulnerabilities and malware             │    │    │
-│  │  │  4. Report findings to Qualys platform               │    │    │
-│  │  │  5. Monitor running containers                       │    │    │
-│  │  │                                                      │    │    │
-│  │  └─────────────────────────────────────────────────────┘    │    │
-│  └─────────────────────────────────────────────────────────────┘    │
-│                                  │                                   │
-│                                  ▼                                   │
-│                       Qualys Cloud Platform                          │
-│                       (Centralized Results)                          │
-└─────────────────────────────────────────────────────────────────────┘</code></pre>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Report</th>
+                        <th>Format</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>SARIF</td>
+                        <td>JSON (SARIF 2.1.0)</td>
+                        <td>GitHub Security tab, Azure DevOps Advanced Security</td>
+                    </tr>
+                    <tr>
+                        <td>JSON</td>
+                        <td>JSON</td>
+                        <td>Custom processing, archival</td>
+                    </tr>
+                    <tr>
+                        <td>GitLab Security</td>
+                        <td>JSON (GitLab format)</td>
+                        <td>GitLab Security Dashboard</td>
+                    </tr>
+                    <tr>
+                        <td>SPDX SBOM</td>
+                        <td>JSON (SPDX 2.3)</td>
+                        <td>Software inventory, compliance</td>
+                    </tr>
+                    <tr>
+                        <td>CycloneDX SBOM</td>
+                        <td>JSON (CycloneDX 1.4)</td>
+                        <td>Software inventory, compliance</td>
+                    </tr>
+                </tbody>
+            </table>
 
-        <h2>Scan Caching</h2>
+            <h2>Policy Evaluation Flow</h2>
 
-        <p>To optimize performance and reduce duplicate scans, all integrations implement caching:</p>
+            <h3>Threshold-Based</h3>
+<pre><code>Scan Results → Count by Severity → Compare to Thresholds → Pass/Fail
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Integration</th>
-                    <th>Cache Store</th>
-                    <th>Default TTL</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>AWS Fargate/Lambda</td>
-                    <td>DynamoDB</td>
-                    <td>24 hours</td>
-                </tr>
-                <tr>
-                    <td>Azure ACI/ACA</td>
-                    <td>Azure Storage Tables</td>
-                    <td>24 hours</td>
-                </tr>
-                <tr>
-                    <td>Kubernetes Sensor</td>
-                    <td>Local cache + Qualys platform</td>
-                    <td>Configurable</td>
-                </tr>
-            </tbody>
-        </table>
+Example:
+  Critical: 2  vs  max_critical: 0  → FAIL
+  High: 3      vs  max_high: 5      → PASS
+  Medium: 10   vs  max_medium: -1   → PASS (unlimited)</code></pre>
 
-        <h3>Cache Key Generation</h3>
+            <h3>Cloud Policy</h3>
+<pre><code>Scan Results → Submit to Qualys API → Policy Engine → ALLOW/DENY/AUDIT
 
-        <p>Cache keys are generated from image identifiers:</p>
-        <pre><code>cache_key = hash(registry + "/" + repository + "@" + digest)</code></pre>
+Policy Actions:
+  ALLOW → Pipeline continues
+  DENY  → Pipeline fails (exit code 42)
+  AUDIT → Pipeline continues with warning (exit code 43)</code></pre>
 
-        <p>Using the image digest ensures that even if a tag is reused, a new scan is triggered for different image content.</p>
+            <h2>Result Delivery</h2>
 
-        <h2>Result Delivery</h2>
+            <h3>Pipeline Outputs</h3>
+            <p>All integrations provide outputs for use in subsequent pipeline steps:</p>
+            <ul>
+                <li><code>vulnerability_count</code> – Total vulnerabilities found</li>
+                <li><code>critical_count</code>, <code>high_count</code>, <code>medium_count</code>, <code>low_count</code></li>
+                <li><code>policy_result</code> – ALLOW, DENY, AUDIT, or NONE</li>
+                <li><code>scan_passed</code> – Boolean indicating threshold/policy pass</li>
+                <li><code>sarif_path</code>, <code>json_path</code>, <code>sbom_path</code> – Report file paths</li>
+            </ul>
 
-        <h3>Synchronous (CI/CD)</h3>
-        <p>Results are returned immediately to the pipeline:</p>
-        <ul>
-            <li>Vulnerability counts available as action outputs</li>
-            <li>Policy result (ALLOW/DENY/AUDIT) determines workflow outcome</li>
-            <li>Reports saved as artifacts for later review</li>
-        </ul>
+            <h3>Dashboard Integration</h3>
+            <p>All scan results are available in the Qualys Container Security console:</p>
+            <ul>
+                <li>Centralized vulnerability visibility</li>
+                <li>Historical trending and reporting</li>
+                <li>Policy management and compliance tracking</li>
+            </ul>
 
-        <h3>Asynchronous (Cloud)</h3>
-        <p>Results are delivered via notifications:</p>
-        <ul>
-            <li>SNS topics for AWS integrations</li>
-            <li>Service Bus for Azure integrations</li>
-            <li>Webhook callbacks for custom integrations</li>
-        </ul>
+            <div class="next-steps">
+                <h3>Next Steps</h3>
+                <ul>
+                    <li><a href="authentication.htm">Authentication</a> – API authentication methods</li>
+                </ul>
+            </div>
+        </div>
 
-        <h3>Dashboard (Qualys Platform)</h3>
-        <p>All scan results are available in the Qualys Container Security console:</p>
-        <ul>
-            <li>Centralized vulnerability visibility</li>
-            <li>Historical trending and reporting</li>
-            <li>Policy management and compliance tracking</li>
-        </ul>
-
-        <div class="next-steps">
-            <h3>Next Steps</h3>
-            <p><a href="authentication.htm">Authentication &rarr;</a></p>
+        <div class="content-footer">
+            © 2026 Qualys, Inc. All rights reserved.
         </div>
     </main>
+
+    <script src="../assets/script.js"></script>
 </body>
 </html>
