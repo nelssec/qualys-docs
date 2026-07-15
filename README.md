@@ -1,5 +1,7 @@
 # Qualys CI/CD Security Integration Documentation
 
+> ⚠️ **Unofficial project.** This is a personal project and is not affiliated with, endorsed by, or supported by Qualys, Inc.
+
 Documentation for integrating Qualys container and code security scanning into CI/CD pipelines.
 
 ## Supported Platforms
